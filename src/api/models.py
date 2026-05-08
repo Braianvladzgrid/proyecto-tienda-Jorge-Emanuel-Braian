@@ -14,6 +14,12 @@ class Cliente(db.Model):
     pedidos = db.relationship('Order', backref='cliente', lazy=True)
     def __repr__(self):
         return f'<Cliente {self.nombre}>'
+    def set_password(self, password):
+        self.pw = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.pw, password)
+
     def serialize(self):
         return {"id": self.id, "nombre": self.nombre, "correo": self.correo}
 
@@ -26,6 +32,12 @@ class Categoria(db.Model):
     productos = db.relationship('Product', backref='categoria', lazy=True)
     def __repr__(self):
         return f'<Categoria {self.nombre}>'
+    def set_password(self, password):
+        self.pw = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.pw, password)
+
     def serialize(self):
         return {"id": self.id, "nombre": self.nombre}
 
@@ -39,6 +51,12 @@ class Proveedor(db.Model):
     productos = db.relationship('Product', backref='proveedor', lazy=True)
     def __repr__(self):
         return f'<Proveedor {self.nombre}>'
+    def set_password(self, password):
+        self.pw = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.pw, password)
+
     def serialize(self):
         return {"id": self.id, "nombre": self.nombre}
 
@@ -55,6 +73,12 @@ class Product(db.Model):
     order_lines = db.relationship('OrderLine', backref='product', lazy=True)
     def __repr__(self):
         return f'<Product {self.nombre}>'
+    def set_password(self, password):
+        self.pw = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.pw, password)
+
     def serialize(self):
         return {"id": self.id, "nombre": self.nombre, "precio": float(self.precio), "stock": self.stock}
 
