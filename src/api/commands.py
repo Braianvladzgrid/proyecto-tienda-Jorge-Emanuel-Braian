@@ -5,4 +5,4 @@ def setup_commands(app):
     @app.cli.command("insert-test-data")
     @click.argument("count")
     def insert_test_data(count):
-        print(f"Preparado para insertar {count} registros")
+        pass
