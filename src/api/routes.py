@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Blueprint
+Ôªøfrom flask import Flask, request, jsonify, Blueprint
 from api.models import db, Cliente, Product, Order, OrderLine, OrderStatus
 
 api = Blueprint('api', __name__)
@@ -24,7 +24,7 @@ def password_recovery():
     cliente = Cliente.query.filter_by(correo=email).first()
     
     if not cliente:
-        return jsonify({"message": "Si el correo existe, se enviar·n instrucciones"}), 200
+        return jsonify({"message": "Si el correo existe, se enviar√°n instrucciones"}), 200
     
     return jsonify({"message": "Instrucciones enviadas al correo"}), 200
 
@@ -38,7 +38,7 @@ def password_reset():
     if cliente:
         cliente.set_password(new_password)
         db.session.commit()
-        return jsonify({"message": "ContraseÒa actualizada"}), 200
+        return jsonify({"message": "Contrase√±a actualizada"}), 200
     
     return jsonify({"message": "Error al actualizar"}), 400
 
@@ -49,7 +49,7 @@ def login():
     password = data.get("password")
     cliente = Cliente.query.filter_by(correo=email).first()
     if not cliente or not cliente.check_password(password):
-        return jsonify({"message": "Credenciales inv·lidas"}), 401
+        return jsonify({"message": "Credenciales inv√°lidas"}), 401
     token = create_access_token(identity=str(cliente.id))
     return jsonify({"token": token, "cliente": cliente.serialize()}), 200
 
