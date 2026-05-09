@@ -1,23 +1,24 @@
-import cloudinary
-import cloudinary.uploader
-import os
-import requests
+﻿from flask import jsonify, url_for
 
-cloudinary.config( 
-  cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME"), 
-  api_key = os.getenv("CLOUDINARY_API_KEY"), 
-  api_secret = os.getenv("CLOUDINARY_API_SECRET") 
-)
+class APIException(Exception):
+    status_code = 400
 
-def upload_image(file):
-    upload_result = cloudinary.uploader.upload(file)
-    return upload_result["secure_url"]
+    def __init__(self, message, status_code=None, payload=None):
+        Exception.__init__(self)
+        self.message = message
+        if status_code is not None:
+            self.status_code = status_code
+        self.payload = payload
 
-def send_recovery_email(to_email, token):
-    return requests.post(
-        f"https://api.mailgun.net/v3/{os.getenv('MAIL_DOMAIN')}/messages",
-        auth=("api", os.getenv('MAILGUN_API_KEY')),
-        data={"from": "Soporte Tienda <mailgun@YOUR_DOMAIN_HERE>",
-              "to": [to_email],
-              "subject": "Recuperacion de contrasenia",
-              "text": f"Tu token es: {token}"})
+    def to_dict(self):
+        rv = dict(self.payload or ())
+        rv['message'] = self.message
+        return rv
+
+def generate_sitemap(app):
+    links = []
+    for rule in app.url_map.iter_rules():
+        if "GET" in rule.methods and len(rule.arguments) == 0:
+            url = url_for(rule.endpoint, **(rule.defaults or {}))
+            links.append(url)
+    return links
