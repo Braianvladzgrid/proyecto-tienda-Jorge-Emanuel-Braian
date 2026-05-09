@@ -1,93 +1,71 @@
-﻿from flask import Flask, request, jsonify, Blueprint
-from api.models import db, Cliente, Product, Order, OrderLine, OrderStatus
+﻿import os
+import requests
+import cloudinary
+import cloudinary.uploader
+from flask import Flask, request, jsonify, Blueprint
+from api.models import db, User, Product, Favorite
+from api.utils import generate_sitemap, APIException
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 api = Blueprint('api', __name__)
 
-@api.route('/register', methods=['POST'])
-def register():
-    data = request.json
-    email = data.get("email")
-    password = data.get("password")
-    nombre = data.get("nombre")
-    if Cliente.query.filter_by(correo=email).first():
-        return jsonify({"message": "El usuario ya existe"}), 400
-    nuevo_cliente = Cliente(correo=email, nombre=nombre)
-    nuevo_cliente.set_password(password)
-    db.session.add(nuevo_cliente)
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+)
+
+def send_welcome_email(email):
+    return requests.post(
+        f"https://api.mailgun.net/v3/{os.getenv('MAILGUN_DOMAIN')}/messages",
+        auth=("api", os.getenv("MAILGUN_API_KEY")),
+        data={"from": f"Tienda AI <mailgun@{os.getenv('MAILGUN_DOMAIN')}>",
+              "to": [email],
+              "subject": "Bienvenido a nuestra tienda",
+              "text": "Gracias por registrarte en nuestra plataforma."})
+
+@api.route('/signup', methods=['POST'])
+def signup():
+    body = request.get_json()
+    user = User(email=body['email'], password=body['password'], is_active=True)
+    db.session.add(user)
     db.session.commit()
-    return jsonify({"message": "Usuario creado correctamente"}), 201
-
-@api.route('/password-recovery', methods=['POST'])
-def password_recovery():
-    data = request.json
-    email = data.get("email")
-    cliente = Cliente.query.filter_by(correo=email).first()
-    
-    if not cliente:
-        return jsonify({"message": "Si el correo existe, se enviaran instrucciones"}), 200
-    
-    return jsonify({"message": "Instrucciones enviadas al correo"}), 200
-
-@api.route('/password-reset', methods=['POST'])
-def password_reset():
-    data = request.json
-    email = data.get("email")
-    new_password = data.get("password")
-    
-    cliente = Cliente.query.filter_by(correo=email).first()
-    if cliente:
-        cliente.set_password(new_password)
-        db.session.commit()
-        return jsonify({"message": "Contraseña actualizada"}), 200
-    
-    return jsonify({"message": "Error al actualizar"}), 400
+    send_welcome_email(user.email)
+    return jsonify({"message": "Usuario creado con exito"}), 201
 
 @api.route('/login', methods=['POST'])
 def login():
-    data = request.json
-    email = data.get("email")
-    password = data.get("password")
-    cliente = Cliente.query.filter_by(correo=email).first()
-    if not cliente or not cliente.check_password(password):
-        return jsonify({"message": "Credenciales inválidas"}), 401
-    token = create_access_token(identity=str(cliente.id))
-    return jsonify({"token": token, "cliente": cliente.serialize()}), 200
+    body = request.get_json()
+    user = User.query.filter_by(email=body['email'], password=body['password']).first()
+    if not user: return jsonify({"msg": "Datos incorrectos"}), 401
+    token = create_access_token(identity=str(user.id))
+    return jsonify({"token": token, "user": user.serialize()}), 200
 
-@api.route('/checkout', methods=['POST'])
-def checkout():
-    data = request.json
-    items = data.get("items")
-    
-    nueva_orden = Order(
-        cliente_id=data.get("cliente_id"),
-        total_amount=0,
-        order_status_id=1
-    )
-    db.session.add(nueva_orden)
-    
-    total_acumulado = 0
-    for item in items:
-        producto = Product.query.get(item["product_id"])
-        if producto and producto.stock >= item["cantidad"]:
-            subtotal = float(producto.precio) * item["cantidad"]
-            total_acumulado += subtotal
-            
-            linea = OrderLine(
-                order=nueva_orden,
-                product_id=producto.id,
-                cantidad=item["cantidad"],
-                precio_unitario=producto.precio,
-                subtotal=subtotal
-            )
-            producto.stock -= item["cantidad"]
-            db.session.add(linea)
-            
-    nueva_orden.total_amount = total_acumulado
+@api.route('/product/<int:product_id>/image', methods=['POST'])
+@jwt_required()
+def upload_product_image(product_id):
+    file = request.files['file']
+    upload_result = cloudinary.uploader.upload(file)
+    product = Product.query.get(product_id)
+    product.image_url = upload_result['secure_url']
     db.session.commit()
-    
-    return jsonify({"message": "Orden procesada", "order_id": nueva_orden.id, "total": total_acumulado}), 201
+    return jsonify(product.serialize()), 200
 
-@api.route('/products', methods=['GET'])
-def get_products():
-    products = Product.query.all()
-    return jsonify([p.serialize() for p in products]), 200
+@api.route('/favorite', methods=['POST'])
+@jwt_required()
+def add_favorite():
+    user_id = get_jwt_identity()
+    body = request.get_json()
+    fav = Favorite(user_id=user_id, product_id=body['product_id'])
+    db.session.add(fav)
+    db.session.commit()
+    return jsonify({"msg": "Agregado a favoritos"}), 200
+
+@api.route('/favorite/<int:fav_id>', methods=['DELETE'])
+@jwt_required()
+def delete_favorite(fav_id):
+    user_id = get_jwt_identity()
+    fav = Favorite.query.filter_by(id=fav_id, user_id=user_id).first()
+    db.session.delete(fav)
+    db.session.commit()
+    return jsonify({"msg": "Favorito eliminado"}), 200
