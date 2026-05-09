@@ -1,15 +1,18 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 
 export const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
-        <div className="">
+        <header className="">
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
                 <div className="container-fluid">
                     {/* <!-- Left side navBar --> */}
+                    <Link to="/">
+                        <i className="fa-solid fa-store fa-3x text-light"></i>
+                    </Link>
 
-                    <i className="fa-solid fa-store fa-3x text-light"></i>
 
                     {/* <!-- Right side navBar --> */}
                     {/* Collapse option */}
@@ -42,26 +45,26 @@ export const Header = () => {
                                 </button>
 
                                 <button
-                                    class="btn btn-outline-secondary dropdown-toggle ms-2"
+                                    className="btn btn-outline-secondary dropdown-toggle ms-2"
                                     type="button"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
                                 >
-                                    <i class="fa-solid fa-bars"></i>
+                                    <i className="fa-solid fa-bars"></i>
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-lg-end">
-                                    <li><a class="dropdown-item" href="#">Productos</a></li>
+                                <ul className="dropdown-menu dropdown-menu-lg-end">
+                                    <li><a className="dropdown-item" href="#">Productos</a></li>
                                     <li>
-                                        <a class="dropdown-item" href="#">Ofertas</a>
+                                        <a className="dropdown-item" href="#">Ofertas</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">Contacto</a>
+                                        <a className="dropdown-item" href="#">Contacto</a>
                                     </li>
-                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><hr className="dropdown-divider" /></li>
                                     <li>
-                                        <a class="dropdown-item text-primary" href="#"
-                                        >Login</a
-                                        >
+                                        <Link to="/login" className="dropdown-item text-primary">
+                                            Login
+                                        </Link>
                                     </li>
                                 </ul>
                             </li>
@@ -69,7 +72,7 @@ export const Header = () => {
                     </div>
                 </div>
             </nav>
-        </div>
+        </header>
     );
 
     // return (
