@@ -24,7 +24,7 @@ def password_recovery():
     cliente = Cliente.query.filter_by(correo=email).first()
     
     if not cliente:
-        return jsonify({"message": "Si el correo existe, se enviarán instrucciones"}), 200
+        return jsonify({"message": "Si el correo existe, se enviaran instrucciones"}), 200
     
     return jsonify({"message": "Instrucciones enviadas al correo"}), 200
 
