@@ -1,17 +1,75 @@
 ﻿from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash
+)
 
 db = SQLAlchemy()
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(250), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
-    favorites = db.relationship('Favorite', backref='user', lazy=True)
-    cart_items = db.relationship('CartItem', backref='user', lazy=True)
-    def serialize(self):
-        return {"id": self.id, "email": self.email, "favorites": [fav.serialize() for fav in self.favorites]}
+    __tablename__ = 'user'
 
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    email = db.Column(
+        db.String(120),
+        unique=True,
+        nullable=False
+    )
+
+    # Guarda el hash, no la contraseña real
+    password = db.Column(
+        db.String(250),
+        nullable=False
+    )
+
+    is_active = db.Column(
+        db.Boolean(),
+        unique=False,
+        nullable=False,
+        default=True
+    )
+
+    favorites = db.relationship(
+        'Favorite',
+        backref='user',
+        lazy=True
+    )
+
+    cart_items = db.relationship(
+        'CartItem',
+        backref='user',
+        lazy=True
+    )
+
+    # Generar hash de contraseña
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    # Verificar contraseña
+    def check_password(self, password):
+        return check_password_hash(
+            self.password,
+            password
+        )
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "email": self.email,
+            "is_active": self.is_active,
+            "favorites": [
+                fav.serialize()
+                for fav in self.favorites
+            ],
+            "cart_items": [
+                item.serialize()
+                for item in self.cart_items
+            ]
+        }
 class Cliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=True)

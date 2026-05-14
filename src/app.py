@@ -2,6 +2,7 @@
 from flask import Flask, request, jsonify
 from flask_migrate import Migrate
 from flask_cors import CORS
+from flask_talisman import Talisman
 from api.models import db
 from api.routes import api
 from api.admin import setup_admin
@@ -16,6 +17,7 @@ MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
 
 CORS(app)
+Talisman(app, content_security_policy=None)
 
 setup_admin(app)
 setup_commands(app)

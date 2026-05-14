@@ -4,6 +4,7 @@ import cloudinary
 import cloudinary.uploader
 from flask import Flask, request, jsonify, Blueprint
 from api.models import db, User, Product, Favorite
+from api.schemas import UserSchema
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
@@ -15,6 +16,12 @@ cloudinary.config(
     api_secret=os.getenv("CLOUDINARY_API_SECRET")
 )
 
+
+@api.route('/hello', methods=['GET'])
+def hello():
+    return jsonify({"message": "Backend conectado correctamente"}), 200
+
+
 def send_welcome_email(email):
     return requests.post(
         f"https://api.mailgun.net/v3/{os.getenv('MAILGUN_DOMAIN')}/messages",
@@ -24,22 +31,35 @@ def send_welcome_email(email):
               "subject": "Bienvenido a nuestra tienda",
               "text": "Gracias por registrarte en nuestra plataforma."})
 
+
 @api.route('/signup', methods=['POST'])
-def signup():
+def git signup():
     body = request.get_json()
-    user = User(email=body['email'], password=body['password'], is_active=True)
+    schema = UserSchema()
+    errors = schema.validate(body)
+    if errors:
+        return jsonify({"error": errors}), 400
+    user = User(email=body['email'], is_active=True)
+    user.set_password(body['password'])
     db.session.add(user)
     db.session.commit()
     send_welcome_email(user.email)
     return jsonify({"message": "Usuario creado con exito"}), 201
 
+
 @api.route('/login', methods=['POST'])
 def login():
     body = request.get_json()
-    user = User.query.filter_by(email=body['email'], password=body['password']).first()
-    if not user: return jsonify({"msg": "Datos incorrectos"}), 401
+    schema = UserSchema()
+    errors = schema.validate(body)
+    if errors:
+        return jsonify({"error": errors}), 400
+    user = User.query.filter_by(email=body['email']).first()
+    if not user or not user.check_password(body['password']):
+        return jsonify({"msg": "Datos incorrectos"}), 401
     token = create_access_token(identity=str(user.id))
     return jsonify({"token": token, "user": user.serialize()}), 200
+
 
 @api.route('/product/<int:product_id>/image', methods=['POST'])
 @jwt_required()
@@ -51,6 +71,7 @@ def upload_product_image(product_id):
     db.session.commit()
     return jsonify(product.serialize()), 200
 
+
 @api.route('/favorite', methods=['POST'])
 @jwt_required()
 def add_favorite():
@@ -60,6 +81,7 @@ def add_favorite():
     db.session.add(fav)
     db.session.commit()
     return jsonify({"msg": "Agregado a favoritos"}), 200
+
 
 @api.route('/favorite/<int:fav_id>', methods=['DELETE'])
 @jwt_required()
