@@ -67,7 +67,7 @@ const Home = () => {
       <section style={{ background: "var(--surface-2)", padding: "24px 0", borderBottom: "1px solid rgba(46,125,50,0.1)" }}>
         <div className="container">
           <div className="d-flex justify-content-center gap-5 flex-wrap">
-            {[{ emoji: "🥬", name: "Verduras" }, { emoji: "🍎", name: "Frutas" }, { emoji: "🌿", name: "Orgánicos" }, { emoji: "🫚", name: "Condimentos" }, { emoji: "🥚", name: "Huevos" }, { emoji: "🍋", name: "Cítricos" }].map(({ emoji, name }) => (
+            {[{ emoji: "🥬", name: "Verduras" }, { emoji: "🍎", name: "Frutas" }, { emoji: "🌿", name: "Hierbas" }, { emoji: "🫚", name: "Condimentos" }, { emoji: "🥚", name: "Pecuarios" }, { emoji: "🍋", name: "Cítricos" }].map(({ emoji, name }) => (
               <div key={name} className="text-center" style={{ cursor: "pointer" }} onClick={() => setActiveCategory(name)}>
                 <div style={{ fontSize: "2rem" }}>{emoji}</div>
                 <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent)" }}>{name}</div>

@@ -26,6 +26,39 @@ const prodSample = [
     image_url:
       "https://www.grillhouse.mx/cdn/shop/files/romana_400x.jpg?v=1753147574",
   },
+  {
+    id: 1,
+    name: "huevo rojo",
+    stock: 50,
+    unit: "kg",
+    category: "Pecuarios",
+    description: "Huevo blanco de gallina",
+    price: 55,
+    image_url:
+      "https://clickabasto.com/cdn/shop/products/huevo_62ca4251-c788-4b21-8b46-cc66300781f6_355x356.jpg?v=1654034598",
+  },
+  {
+    id: 5,
+    name: "Pechuga de Pollo",
+    stock: 7,
+    unit: "kg",
+    category: "Pecuarios",
+    description: "Pechuga de pollo entera",
+    price: 249,
+    image_url:
+      "https://clickabasto.com/cdn/shop/products/5e997e247257a_948x465.jpg?v=1655781934",
+  },
+  {
+    id: 72,
+    name: "Perejil",
+    stock: 17,
+    unit: "pza",
+    category: "Hierbas",
+    description: "Manojo de Perejil de 250g",
+    price: 40,
+    image_url:
+      "https://clickabasto.com/cdn/shop/files/perejil_360x360.webp?v=1735241032",
+  },
 ];
 
 const userSample = [
@@ -69,7 +102,6 @@ const cartSample = [
     password: "12345",
   },
 ];
-
 
 // *****************************
 
@@ -116,7 +148,6 @@ const getState = ({ getStore, getActions, setStore }) => ({
         console.log("Error al salir", error);
       }
     },
-
 
     getProducts: async () => {
       try {

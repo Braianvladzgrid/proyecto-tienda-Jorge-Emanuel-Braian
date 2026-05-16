@@ -11,6 +11,7 @@ const Profile = () => {
   const cartCount = cart.reduce((acc, i) => acc + (i.quantity || 1), 0);
   const orderTotal = cart.reduce((acc, i) => acc + parseFloat(i.price || 0) * (i.quantity || 1), 0);
 
+  // Obtener el perfil que corresponde a la sesión iniciada
   useEffect(() => { actions.getProfile(); }, []);
 
   const handleLogout = () => { actions.logout(); navigate("/"); };
