@@ -19,13 +19,13 @@ const ProductDetail = () => {
     if (ok) { setAdded(true); setTimeout(() => setAdded(false), 2500); }
   };
 
-  // if (store.loading || !p) {
-  //   return (
-  //     <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "60vh" }}>
-  //       <div className="spinner-accent"></div>
-  //     </div>
-  //   );
-  // }
+  if (store.loading || !p) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "60vh" }}>
+        <div className="spinner-accent"></div>
+      </div>
+    );
+  }
 
   return (
     <section className="page-section" style={{ background: "var(--primary)" }}>
