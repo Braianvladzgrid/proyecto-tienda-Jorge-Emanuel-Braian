@@ -20,13 +20,21 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navMenu">
           <ul className="navbar-nav mx-auto gap-1">
             <li className="nav-item"><Link className="nav-link nav-link-custom" to="/">🏠 Inicio</Link></li>
+
+            {/* Únicamente con cuenta abierta */}
             {store.token && (<>
               <li className="nav-item"><Link className="nav-link nav-link-custom" to="/favorites">❤️ Favoritos</Link></li>
               <li className="nav-item"><Link className="nav-link nav-link-custom" to="/profile">👤 Mi cuenta</Link></li>
             </>)}
+
           </ul>
           <div className="d-flex align-items-center gap-3">
+
             {store.token ? (<>
+              {/* Con sesión abierta */}
+              <p className="navbar-brand fw-bold" style={{ fontFamily: "'Fredoka One', cursive", fontSize: "1.8rem", color: "var(--accent)" }}>
+                🥦 Hola, tú
+              </p>
               <Link to="/cart" className="position-relative text-decoration-none" style={{ color: "var(--accent)" }}>
                 <i className="fas fa-shopping-basket" style={{ fontSize: "1.4rem" }}></i>
                 {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
@@ -35,6 +43,7 @@ const Navbar = () => {
                 <i className="fas fa-sign-out-alt me-1"></i> Salir
               </button>
             </>) : (<>
+              {/* Con sesión cerrada */}
               <Link to="/login" className="btn btn-outline-accent btn-sm">Iniciar sesión</Link>
               <Link to="/signup" className="btn btn-accent btn-sm">Registrarse</Link>
             </>)}
