@@ -49,6 +49,28 @@ const userSample = [
   },
 ];
 
+const cartSample = [
+  {
+    id: 1,
+    firstName: "Emanuel",
+    email: "emanuel@gmail.com",
+    password: "12345",
+  },
+  {
+    id: 2,
+    firstName: "Jorge",
+    email: "jorge@gmail.com",
+    password: "12345",
+  },
+  {
+    id: 3,
+    firstName: "Braian",
+    email: "braian@gmail.com",
+    password: "12345",
+  },
+];
+
+
 // *****************************
 
 const getState = ({ getStore, getActions, setStore }) => ({
@@ -67,8 +89,8 @@ const getState = ({ getStore, getActions, setStore }) => ({
 
     login: async (email, password) => {
       try {
-        const match = userSample.find((user) => user.email == email);
-        setStore({ token: "OK", user: match });
+        const userMatch = userSample.find((user) => user.email == email);
+        setStore({ token: "OK", user: userMatch });
       } catch (error) {
         console.log("Error cargando usuario", error);
       }
@@ -107,8 +129,8 @@ const getState = ({ getStore, getActions, setStore }) => ({
     },
     getProduct: async (id) => {
       try {
-        const match = prodSample.find((item) => item.id == id);
-        setStore({ product: match });
+        const productMatch = prodSample.find((item) => item.id == id);
+        setStore({ product: productMatch });
       } catch (error) {
         console.log("Error cargando producto", error);
       }
