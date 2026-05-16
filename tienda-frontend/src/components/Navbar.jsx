@@ -32,8 +32,8 @@ const Navbar = () => {
 
             {store.token ? (<>
               {/* Con sesión abierta */}
-              <p className="navbar-brand fw-bold" style={{ fontFamily: "'Fredoka One', cursive", fontSize: "1.8rem", color: "var(--accent)" }}>
-                🥦 Hola, tú
+              <p className="navbar-brand mt-3" style={{ fontFamily: "'Fredoka One', cursive", fontSize: "1.2rem", color: "var(--accent)" }}>
+                Hola, {store.user.firstName}
               </p>
               <Link to="/cart" className="position-relative text-decoration-none" style={{ color: "var(--accent)" }}>
                 <i className="fas fa-shopping-basket" style={{ fontSize: "1.4rem" }}></i>
