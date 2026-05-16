@@ -1,4 +1,4 @@
-﻿import React, { useContext } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../layout";
 
@@ -6,8 +6,17 @@ const ProductCard = ({ product }) => {
   const { store, actions } = useContext(Context);
   const isFav = store.favorites.some((f) => f.product_id === product.id);
 
-  const handleFav = (e) => { e.preventDefault(); e.stopPropagation(); if (store.token) actions.toggleFavorite(product.id); };
-  const handleCart = (e) => { e.preventDefault(); e.stopPropagation(); actions.addToCart(product.id); };
+  const handleFav = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (store.token) actions.toggleFavorite(product.id);
+  };
+
+  const handleCart = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    actions.addToCart(product, 1);
+  };
 
   return (
     <div className="card-dark h-100">
@@ -40,10 +49,13 @@ const ProductCard = ({ product }) => {
               <span className="price-tag">${parseFloat(product.price || 0).toFixed(2)}</span>
               <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginLeft: "4px" }}>/ {product.unit || ""}</span>
             </div>
-            {store.token
-              ? <button className="btn btn-accent btn-sm" onClick={handleCart} disabled={product.stock === 0}><i className="fas fa-plus me-1"></i> Agregar</button>
-              : <Link to="/login" className="btn btn-outline-accent btn-sm" onClick={(e) => e.stopPropagation()}>Agregar</Link>
-            }
+            <button
+              className="btn btn-accent btn-sm"
+              onClick={handleCart}
+              disabled={product.stock === 0}
+            >
+              <i className="fas fa-plus me-1"></i> Agregar
+            </button>
           </div>
         </div>
       </Link>
@@ -52,4 +64,3 @@ const ProductCard = ({ product }) => {
 };
 
 export default ProductCard;
-

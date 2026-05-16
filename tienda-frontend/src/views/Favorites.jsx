@@ -1,27 +1,35 @@
-﻿import React, { useContext } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../layout";
 import ProductCard from "../components/ProductCard";
 
 const Favorites = () => {
   const { store } = useContext(Context);
-  const favProducts = (store.favorites || [])
-    .map((fav) => (store.products || []).find((p) => p.id === fav.product_id))
-    .filter(Boolean);
+
+  const favProducts = store.products.filter((p) =>
+    store.favorites.some((f) => f.product_id === p.id)
+  );
 
   return (
-    <section className="page-section" style={{ background: "var(--primary)" }}>
+    <div style={{ padding: "40px 0", background: "var(--surface)", minHeight: "80vh" }}>
       <div className="container">
-        <h2 className="mb-1" style={{ color: "var(--accent)" }}>❤️ Mis favoritos</h2>
-        <p className="mb-5" style={{ color: "var(--text-muted)" }}>
+        <h2 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)", fontSize: "2.2rem", marginBottom: "8px" }}>
+          ❤️ Mis favoritos
+        </h2>
+        <p style={{ color: "var(--text-muted)", marginBottom: "32px" }}>
           {favProducts.length} {favProducts.length === 1 ? "producto guardado" : "productos guardados"}
         </p>
+
         {favProducts.length === 0 ? (
-          <div className="d-flex flex-column align-items-center justify-content-center text-center py-5">
-            <div style={{ fontSize: "5rem" }}>🥺</div>
-            <h4 style={{ color: "var(--accent)", marginTop: "1rem" }}>Aún no tenés favoritos</h4>
-            <p style={{ color: "var(--text-muted)" }}>Explorá nuestros productos y guardá los que más te gusten.</p>
-            <Link to="/" className="btn btn-accent mt-3">Explorar productos 🥬</Link>
+          <div style={{ textAlign: "center", padding: "60px 20px" }}>
+            <div style={{ fontSize: "5rem", marginBottom: "16px" }}>🤍</div>
+            <h4 style={{ color: "var(--text)", marginBottom: "8px" }}>Aún no guardaste favoritos</h4>
+            <p style={{ color: "var(--text-muted)", marginBottom: "24px" }}>
+              Presioná el ❤️ en cualquier producto para guardarlo acá
+            </p>
+            <Link to="/" className="btn btn-accent">
+              Explorar productos
+            </Link>
           </div>
         ) : (
           <div className="row g-4">
@@ -33,9 +41,8 @@ const Favorites = () => {
           </div>
         )}
       </div>
-    </section>
+    </div>
   );
 };
 
 export default Favorites;
-

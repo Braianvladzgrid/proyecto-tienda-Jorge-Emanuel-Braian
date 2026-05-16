@@ -1,60 +1,168 @@
-﻿import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../layout";
 
 const Signup = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "" });
-  const [localError, setLocalError] = useState("");
+  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "", confirm: "" });
+  const [loading, setLoading] = useState(false);
+  const [fieldError, setFieldError] = useState("");
 
-  useEffect(() => { if (store.token) navigate("/"); }, [store.token]);
-  useEffect(() => { return () => actions.clearMessage(); }, []);
+  useEffect(() => {
+    actions.clearMessage();
+  }, []);
 
-  const handleSubmit = async (e) => {
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setFieldError("");
+    if (store.error) actions.clearMessage();
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setLocalError("");
-    if (form.password !== form.confirm) { setLocalError("Las contraseñas no coinciden."); return; }
-    if (form.password.length < 6) { setLocalError("La contraseña debe tener al menos 6 caracteres."); return; }
-    const ok = await actions.signup(form.name, form.email, form.password);
+    if (form.password !== form.confirm) {
+      setFieldError("Las contraseñas no coinciden.");
+      return;
+    }
+    if (form.password.length < 4) {
+      setFieldError("La contraseña debe tener al menos 4 caracteres.");
+      return;
+    }
+    setLoading(true);
+    const ok = actions.signup(form.firstName, form.lastName, form.email, form.password);
+    setLoading(false);
     if (ok) navigate("/login");
   };
 
-  const fields = [
-    { key: "name", label: "Nombre completo", type: "text", placeholder: "Juan García" },
-    { key: "email", label: "Correo electrónico", type: "email", placeholder: "tu@email.com" },
-    { key: "password", label: "Contraseña", type: "password", placeholder: "Mínimo 6 caracteres" },
-    { key: "confirm", label: "Confirmar contraseña", type: "password", placeholder: "Repetí la contraseña" },
-  ];
-
   return (
-    <div className="d-flex align-items-center justify-content-center py-5" style={{ minHeight: "85vh", background: "var(--primary)" }}>
-      <div style={{ width: "100%", maxWidth: "460px", padding: "0 1rem" }}>
-        <div className="card-dark p-4 p-md-5">
-          <div className="text-center mb-4">
-            <div style={{ fontSize: "3rem" }}>🌱</div>
-            <h2 className="mb-1" style={{ color: "var(--accent)" }}>Creá tu cuenta</h2>
-            <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Empezá a comprar fresco hoy mismo</p>
-          </div>
-          {(store.error || localError) && (
-            <div className="alert-dark-danger mb-3"><i className="fas fa-exclamation-circle me-2"></i>{store.error || localError}</div>
+    <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 16px", background: "var(--surface)" }}>
+      <div style={{ width: "100%", maxWidth: "480px" }}>
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <div style={{ fontSize: "3rem", marginBottom: "8px" }}>🌱</div>
+          <h2 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)", fontSize: "2rem", marginBottom: "6px" }}>
+            Crear cuenta gratis
+          </h2>
+          <p style={{ color: "var(--text-muted)", fontSize: "0.95rem" }}>
+            Sumate a La Verde y empezá a comprar fresco
+          </p>
+        </div>
+
+        <div className="card-dark p-4">
+          {(store.error || fieldError) && (
+            <div style={{ background: "rgba(229,57,53,0.1)", border: "1px solid rgba(229,57,53,0.3)", borderRadius: "10px", padding: "12px 16px", marginBottom: "20px", color: "#c62828", fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "8px" }}>
+              <i className="fas fa-exclamation-circle"></i> {fieldError || store.error}
+            </div>
           )}
+
+          {store.message && (
+            <div style={{ background: "rgba(46,125,50,0.1)", border: "1px solid rgba(46,125,50,0.3)", borderRadius: "10px", padding: "12px 16px", marginBottom: "20px", color: "var(--accent)", fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "8px" }}>
+              <i className="fas fa-check-circle"></i> {store.message}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit}>
-            {fields.map(({ key, label, type, placeholder }) => (
-              <div className="mb-3" key={key}>
-                <label className="form-label" style={{ color: "var(--text-muted)", fontSize: "0.9rem", fontWeight: 600 }}>{label}</label>
-                <input type={type} className="form-control-dark" placeholder={placeholder}
-                  value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} required />
+            <div className="row g-3 mb-3">
+              <div className="col-6">
+                <label style={{ fontWeight: 600, color: "var(--text)", fontSize: "0.9rem", marginBottom: "6px", display: "block" }}>
+                  Nombre
+                </label>
+                <input
+                  type="text"
+                  name="firstName"
+                  className="form-control-dark"
+                  placeholder="Juan"
+                  value={form.firstName}
+                  onChange={handleChange}
+                  required
+                  style={{ width: "100%" }}
+                />
               </div>
-            ))}
-            <button type="submit" className="btn btn-accent w-100 py-2 mt-2" style={{ fontSize: "1rem" }}>
-              Crear cuenta 🥕
+              <div className="col-6">
+                <label style={{ fontWeight: 600, color: "var(--text)", fontSize: "0.9rem", marginBottom: "6px", display: "block" }}>
+                  Apellido
+                </label>
+                <input
+                  type="text"
+                  name="lastName"
+                  className="form-control-dark"
+                  placeholder="García"
+                  value={form.lastName}
+                  onChange={handleChange}
+                  required
+                  style={{ width: "100%" }}
+                />
+              </div>
+            </div>
+
+            <div className="mb-3">
+              <label style={{ fontWeight: 600, color: "var(--text)", fontSize: "0.9rem", marginBottom: "6px", display: "block" }}>
+                Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                className="form-control-dark"
+                placeholder="tu@email.com"
+                value={form.email}
+                onChange={handleChange}
+                required
+                style={{ width: "100%" }}
+              />
+            </div>
+
+            <div className="mb-3">
+              <label style={{ fontWeight: 600, color: "var(--text)", fontSize: "0.9rem", marginBottom: "6px", display: "block" }}>
+                Contraseña
+              </label>
+              <input
+                type="password"
+                name="password"
+                className="form-control-dark"
+                placeholder="Mínimo 4 caracteres"
+                value={form.password}
+                onChange={handleChange}
+                required
+                style={{ width: "100%" }}
+              />
+            </div>
+
+            <div className="mb-4">
+              <label style={{ fontWeight: 600, color: "var(--text)", fontSize: "0.9rem", marginBottom: "6px", display: "block" }}>
+                Confirmar contraseña
+              </label>
+              <input
+                type="password"
+                name="confirm"
+                className="form-control-dark"
+                placeholder="Repetí tu contraseña"
+                value={form.confirm}
+                onChange={handleChange}
+                required
+                style={{ width: "100%" }}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-accent w-100"
+              disabled={loading}
+              style={{ padding: "12px", fontSize: "1rem", fontWeight: 700 }}
+            >
+              {loading ? (
+                <span><i className="fas fa-spinner fa-spin me-2"></i>Creando cuenta...</span>
+              ) : (
+                <span><i className="fas fa-user-plus me-2"></i>Crear cuenta</span>
+              )}
             </button>
           </form>
-          <p className="text-center mt-4 mb-0" style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>
+
+          <div style={{ textAlign: "center", marginTop: "24px", paddingTop: "20px", borderTop: "1px solid rgba(0,0,0,0.08)", fontSize: "0.9rem", color: "var(--text-muted)" }}>
             ¿Ya tenés cuenta?{" "}
-            <Link to="/login" className="text-accent text-decoration-none fw-bold">Iniciar sesión</Link>
-          </p>
+            <Link to="/login" style={{ color: "var(--accent)", fontWeight: 700, textDecoration: "none" }}>
+              Iniciá sesión
+            </Link>
+          </div>
         </div>
       </div>
     </div>
@@ -62,4 +170,3 @@ const Signup = () => {
 };
 
 export default Signup;
-

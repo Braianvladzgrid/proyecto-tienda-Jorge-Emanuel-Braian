@@ -1,50 +1,87 @@
-﻿import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../layout";
 
 const ForgotPassword = () => {
   const { store, actions } = useContext(Context);
   const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  useEffect(() => { return () => actions.clearMessage(); }, []);
+  useEffect(() => {
+    actions.clearMessage();
+  }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const ok = await actions.forgotPassword(email);
-    if (ok) setSent(true);
+    const ok = actions.forgotPassword(email);
+    if (ok) setSubmitted(true);
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center py-5" style={{ minHeight: "80vh", background: "var(--primary)" }}>
-      <div style={{ width: "100%", maxWidth: "420px", padding: "0 1rem" }}>
-        <div className="card-dark p-4 p-md-5">
-          <div className="text-center mb-4">
-            <div style={{ fontSize: "3rem" }}>🔑</div>
-            <h2 className="mb-1" style={{ color: "var(--accent)" }}>Recuperar contraseña</h2>
-            <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Te enviamos un correo con instrucciones</p>
-          </div>
-          {store.error && <div className="alert-dark-danger mb-3"><i className="fas fa-exclamation-circle me-2"></i>{store.error}</div>}
-          {sent ? (
-            <div className="text-center py-3">
-              <div className="alert-dark-success mb-4"><i className="fas fa-envelope me-2"></i>{store.message}</div>
-              <Link to="/login" className="btn btn-accent"><i className="fas fa-arrow-left me-2"></i>Volver al login</Link>
+    <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 16px", background: "var(--surface)" }}>
+      <div style={{ width: "100%", maxWidth: "420px" }}>
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <div style={{ fontSize: "3rem", marginBottom: "8px" }}>🔑</div>
+          <h2 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)", fontSize: "2rem", marginBottom: "6px" }}>
+            Recuperar contraseña
+          </h2>
+          <p style={{ color: "var(--text-muted)", fontSize: "0.95rem" }}>
+            Ingresá tu email y te enviamos un enlace para restablecer tu contraseña
+          </p>
+        </div>
+
+        <div className="card-dark p-4">
+          {store.error && (
+            <div style={{ background: "rgba(229,57,53,0.1)", border: "1px solid rgba(229,57,53,0.3)", borderRadius: "10px", padding: "12px 16px", marginBottom: "20px", color: "#c62828", fontSize: "0.9rem" }}>
+              <i className="fas fa-exclamation-circle me-2"></i>{store.error}
+            </div>
+          )}
+
+          {submitted ? (
+            <div style={{ textAlign: "center", padding: "20px 0" }}>
+              <div style={{ fontSize: "3rem", marginBottom: "12px" }}>✉️</div>
+              <h5 style={{ color: "var(--accent)", fontWeight: 700, marginBottom: "8px" }}>¡Email enviado!</h5>
+              <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", marginBottom: "20px" }}>
+                Revisá tu bandeja de entrada en <strong>{email}</strong> y seguí el enlace para restablecer tu contraseña.
+              </p>
+              <Link to="/login" className="btn btn-accent w-100" style={{ fontWeight: 700 }}>
+                Volver al inicio de sesión
+              </Link>
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="form-label" style={{ color: "var(--text-muted)", fontSize: "0.9rem", fontWeight: 600 }}>Correo electrónico</label>
-                <input type="email" className="form-control-dark" placeholder="tu@email.com"
-                  value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <label style={{ fontWeight: 600, color: "var(--text)", fontSize: "0.9rem", marginBottom: "6px", display: "block" }}>
+                  Email de tu cuenta
+                </label>
+                <input
+                  type="email"
+                  className="form-control-dark"
+                  placeholder="tu@email.com"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); if (store.error) actions.clearMessage(); }}
+                  required
+                  style={{ width: "100%" }}
+                />
               </div>
-              <button type="submit" className="btn btn-accent w-100 py-2">
-                Enviar instrucciones <i className="fas fa-paper-plane ms-2"></i>
+
+              <button
+                type="submit"
+                className="btn btn-accent w-100"
+                style={{ padding: "12px", fontSize: "1rem", fontWeight: 700 }}
+              >
+                <i className="fas fa-paper-plane me-2"></i>Enviar enlace de recuperación
               </button>
             </form>
           )}
-          <p className="text-center mt-4 mb-0">
-            <Link to="/login" className="text-accent text-decoration-none" style={{ fontSize: "0.9rem", fontWeight: 600 }}>← Volver al login</Link>
-          </p>
+
+          {!submitted && (
+            <div style={{ textAlign: "center", marginTop: "20px", paddingTop: "16px", borderTop: "1px solid rgba(0,0,0,0.08)", fontSize: "0.9rem", color: "var(--text-muted)" }}>
+              <Link to="/login" style={{ color: "var(--accent)", textDecoration: "none", fontWeight: 600 }}>
+                <i className="fas fa-arrow-left me-1"></i>Volver al login
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -52,4 +89,3 @@ const ForgotPassword = () => {
 };
 
 export default ForgotPassword;
-

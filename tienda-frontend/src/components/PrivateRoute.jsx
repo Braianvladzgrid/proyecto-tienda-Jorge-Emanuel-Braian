@@ -1,4 +1,4 @@
-﻿import React, { useContext } from "react";
+import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { Context } from "../layout";
 
@@ -8,4 +8,3 @@ const PrivateRoute = ({ children }) => {
 };
 
 export default PrivateRoute;
-
