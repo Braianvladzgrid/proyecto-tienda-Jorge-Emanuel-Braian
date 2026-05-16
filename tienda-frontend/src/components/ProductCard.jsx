@@ -30,7 +30,7 @@ const ProductCard = ({ product }) => {
           )}
         </div>
         <div className="p-3 d-flex flex-column flex-grow-1">
-          <span className="category-chip mb-2 d-inline-block">{product.category || "Verdura"}</span>
+          <span className="category-chip mb-2 d-inline-block">{product.category || "Otros"}</span>
           <h6 className="mb-1 fw-bold" style={{ fontSize: "1.05rem", color: "var(--text)" }}>{product.name}</h6>
           <p className="mb-3" style={{ fontSize: "0.85rem", color: "var(--text-muted)", lineHeight: "1.5", flexGrow: 1, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
             {product.description}
@@ -38,7 +38,7 @@ const ProductCard = ({ product }) => {
           <div className="d-flex align-items-center justify-content-between mt-auto">
             <div>
               <span className="price-tag">${parseFloat(product.price || 0).toFixed(2)}</span>
-              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginLeft: "4px" }}>/ kg</span>
+              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginLeft: "4px" }}>/ {product.unit || ""}</span>
             </div>
             {store.token
               ? <button className="btn btn-accent btn-sm" onClick={handleCart} disabled={product.stock === 0}><i className="fas fa-plus me-1"></i> Agregar</button>
