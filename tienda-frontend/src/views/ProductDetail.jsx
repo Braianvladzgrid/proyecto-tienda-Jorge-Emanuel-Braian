@@ -19,17 +19,18 @@ const ProductDetail = () => {
     if (ok) { setAdded(true); setTimeout(() => setAdded(false), 2500); }
   };
 
-  if (store.loading || !p) {
-    return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "60vh" }}>
-        <div className="spinner-accent"></div>
-      </div>
-    );
-  }
+  // if (store.loading || !p) {
+  //   return (
+  //     <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "60vh" }}>
+  //       <div className="spinner-accent"></div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <section className="page-section" style={{ background: "var(--primary)" }}>
       <div className="container">
+
         <button onClick={() => navigate(-1)} className="btn btn-outline-accent btn-sm mb-4">
           <i className="fas fa-arrow-left me-2"></i> Volver
         </button>
@@ -44,13 +45,13 @@ const ProductDetail = () => {
             </div>
           </div>
           <div className="col-md-6">
-            <span className="category-chip mb-3 d-inline-block">{p.category || "Verdura"}</span>
+            <span className="category-chip mb-3 d-inline-block">{p.category || "Otros"}</span>
             <h1 style={{ fontSize: "2.8rem", lineHeight: "1.1", color: "var(--accent)" }}>{p.name}</h1>
             <div className="d-flex align-items-center gap-3 my-3">
               <span className="price-tag" style={{ fontSize: "2.5rem" }}>${parseFloat(p.price || 0).toFixed(2)}</span>
-              <span style={{ color: "var(--text-muted)", fontSize: "0.9rem", fontWeight: 600 }}>/ kg</span>
+              <span style={{ color: "var(--text-muted)", fontSize: "0.9rem", fontWeight: 600 }}>/ {p.unit}</span>
               {p.stock > 0
-                ? <span className="badge" style={{ background: "#e8f5e9", color: "#2e7d32", fontWeight: 700, padding: "6px 14px", borderRadius: "50px", border: "1px solid rgba(46,125,50,0.3)" }}>✅ En stock ({p.stock} kg)</span>
+                ? <span className="badge" style={{ background: "#e8f5e9", color: "#2e7d32", fontWeight: 700, padding: "6px 14px", borderRadius: "50px", border: "1px solid rgba(46,125,50,0.3)" }}>✅ En stock ({p.stock} {p.unit})</span>
                 : <span className="badge bg-danger">Sin stock</span>
               }
             </div>
@@ -58,7 +59,7 @@ const ProductDetail = () => {
             <div className="divider"></div>
             {added && <div className="alert-dark-success mb-3"><i className="fas fa-check-circle me-2"></i>Producto agregado a tu canasta 🧺</div>}
             <div className="d-flex align-items-center gap-3 mb-4">
-              <span style={{ fontWeight: 700, color: "var(--text-muted)" }}>Cantidad (kg):</span>
+              <span style={{ fontWeight: 700, color: "var(--text-muted)" }}>Cantidad ({p.unit}):</span>
               <div className="d-flex align-items-center gap-2">
                 <button className="qty-btn" onClick={() => setQty((q) => Math.max(1, q - 1))}>−</button>
                 <span style={{ width: "36px", textAlign: "center", fontWeight: 800, fontSize: "1.1rem", color: "var(--accent)" }}>{qty}</span>
