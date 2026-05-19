@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Context } from "../store/appContext";
+import Context from "../injectContext";;;
 
 export const Admin = () => {
   const { store, actions } = useContext(Context);
