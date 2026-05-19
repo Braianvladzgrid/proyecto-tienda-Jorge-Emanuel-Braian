@@ -11,7 +11,7 @@ import ForgotPassword from "./views/ForgotPassword";
 import Cart from "./views/Cart";
 import Favorites from "./views/Favorites";
 import Profile from "./views/Profile";
-import Admin from "./views/Admin";
+import { Admin } from "./views/Admin";
 
 const App = () => (
   <BrowserRouter>
