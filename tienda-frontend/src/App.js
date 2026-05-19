@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -11,6 +11,8 @@ import ForgotPassword from "./views/ForgotPassword";
 import Cart from "./views/Cart";
 import Favorites from "./views/Favorites";
 import Profile from "./views/Profile";
+import Admin from "./views/Admin";
+
 const App = () => (
   <BrowserRouter>
     <div className="app-wrapper d-flex flex-column min-vh-100">
@@ -23,15 +25,14 @@ const App = () => (
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route path="/profile" element={<Profile />} />
-          {/* <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
           <Route path="/favorites" element={<PrivateRoute><Favorites /></PrivateRoute>} />
-          <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} /> */}
+          <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+          <Route path="/admin" element={<PrivateRoute><Admin /></PrivateRoute>} />
         </Routes>
       </main>
       <Footer />
     </div>
   </BrowserRouter>
 );
+
 export default App;

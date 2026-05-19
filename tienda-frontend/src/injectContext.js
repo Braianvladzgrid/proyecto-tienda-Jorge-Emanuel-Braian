@@ -1,24 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Context } from "./layout";
 import getState from "./flux";
 
 const injectContext = (PassedComponent) => {
   const StoreWrapper = (props) => {
-    const [state, setState] = useState(
-      getState({
-        getStore: () => state.store,
-        getActions: () => state.actions,
-        setStore: (updatedStore) =>
-          setState((prev) => ({
-            ...prev,
-            store: { ...prev.store, ...updatedStore },
-          })),
-      }),
-    );
+    const [state, setState] = useState(null);
+    const stateRef = useRef(null);
 
     useEffect(() => {
-      state.actions.getProducts();
+      const initialState = getState({
+        getStore: () => stateRef.current.store,
+        getActions: () => stateRef.current.actions,
+        setStore: (updatedStore) =>
+          setState((prev) => {
+            const next = { ...prev, store: { ...prev.store, ...updatedStore } };
+            stateRef.current = next;
+            return next;
+          }),
+      });
+      stateRef.current = initialState;
+      setState(initialState);
     }, []);
+
+    useEffect(() => {
+      if (state) state.actions.getProducts();
+    }, [!!state]);
+
+    if (!state) return null;
 
     return (
       <Context.Provider value={state}>
