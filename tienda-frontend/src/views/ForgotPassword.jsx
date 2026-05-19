@@ -6,14 +6,17 @@ const ForgotPassword = () => {
   const { store, actions } = useContext(Context);
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     actions.clearMessage();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const ok = actions.forgotPassword(email);
+    setIsSending(true);
+    const ok = await actions.forgotPassword(email);
+    setIsSending(false);
     if (ok) setSubmitted(true);
   };
 
@@ -21,12 +24,12 @@ const ForgotPassword = () => {
     <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 16px", background: "var(--surface)" }}>
       <div style={{ width: "100%", maxWidth: "420px" }}>
         <div style={{ textAlign: "center", marginBottom: "32px" }}>
-          <div style={{ fontSize: "3rem", marginBottom: "8px" }}>ğŸ”‘</div>
+          <div style={{ fontSize: "3rem", marginBottom: "8px" }}>??</div>
           <h2 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)", fontSize: "2rem", marginBottom: "6px" }}>
-            Recuperar contraseÃ±a
+            Recuperar contraseña
           </h2>
           <p style={{ color: "var(--text-muted)", fontSize: "0.95rem" }}>
-            IngresÃ¡ tu email y te enviamos un enlace para restablecer tu contraseÃ±a
+            Ingresá tu email y te enviamos un enlace para restablecer tu contraseña
           </p>
         </div>
 
@@ -39,13 +42,13 @@ const ForgotPassword = () => {
 
           {submitted ? (
             <div style={{ textAlign: "center", padding: "20px 0" }}>
-              <div style={{ fontSize: "3rem", marginBottom: "12px" }}>âœ‰ï¸</div>
-              <h5 style={{ color: "var(--accent)", fontWeight: 700, marginBottom: "8px" }}>Â¡Email enviado!</h5>
+              <div style={{ fontSize: "3rem", marginBottom: "12px" }}>??</div>
+              <h5 style={{ color: "var(--accent)", fontWeight: 700, marginBottom: "8px" }}>¡Email enviado!</h5>
               <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", marginBottom: "20px" }}>
-                RevisÃ¡ tu bandeja de entrada en <strong>{email}</strong> y seguÃ­ el enlace para restablecer tu contraseÃ±a.
+                Revisá tu bandeja de entrada en <strong>{email}</strong> y seguí el enlace para restablecer tu contraseña.
               </p>
               <Link to="/login" className="btn btn-accent w-100" style={{ fontWeight: 700 }}>
-                Volver al inicio de sesiÃ³n
+                Volver al inicio de sesión
               </Link>
             </div>
           ) : (
@@ -68,9 +71,11 @@ const ForgotPassword = () => {
               <button
                 type="submit"
                 className="btn btn-accent w-100"
+                disabled={isSending}
                 style={{ padding: "12px", fontSize: "1rem", fontWeight: 700 }}
               >
-                <i className="fas fa-paper-plane me-2"></i>Enviar enlace de recuperaciÃ³n
+                <i className={isSending ? "fas fa-spinner fa-spin me-2" : "fas fa-paper-plane me-2"}></i>
+                {isSending ? "Enviando..." : "Enviar enlace de recuperación"}
               </button>
             </form>
           )}

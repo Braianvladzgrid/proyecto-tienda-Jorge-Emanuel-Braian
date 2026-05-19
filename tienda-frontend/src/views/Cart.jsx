@@ -9,29 +9,37 @@ const Cart = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
   const [ordered, setOrdered] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const subtotal = store.cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const shipping = subtotal >= SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
   const total = subtotal + shipping;
 
-  const handleOrder = () => {
-    setOrdered(true);
-    setTimeout(() => {
-      actions.clearCart();
-      setOrdered(false);
-      navigate("/");
-    }, 3000);
+  const handleOrder = async () => {
+    setIsProcessing(true);
+    const success = await actions.checkoutOrder();
+    setIsProcessing(false);
+    
+    if (success) {
+      setOrdered(true);
+      setTimeout(() => {
+        setOrdered(false);
+        navigate("/");
+      }, 3000);
+    } else {
+      alert("Hubo un problema al procesar tu compra. Por favor, reintentá más tarde.");
+    }
   };
 
   if (ordered) {
     return (
       <div style={{ minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "16px", padding: "40px" }}>
-        <div style={{ fontSize: "5rem" }}>ðŸŽ‰</div>
+        <div style={{ fontSize: "5rem" }}>??</div>
         <h2 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)", fontSize: "2.2rem" }}>
-          Â¡Pedido confirmado!
+          ¡Pedido confirmado!
         </h2>
         <p style={{ color: "var(--text-muted)", fontSize: "1rem" }}>
-          Tu pedido fue recibido. Te avisamos cuando estÃ© en camino ðŸšš
+          Tu pedido fue recibido. Te avisamos cuando esté en camino ??
         </p>
         <div style={{ width: "40px", height: "4px", background: "var(--accent)", borderRadius: "2px", animation: "grow 3s linear forwards" }}></div>
       </div>
@@ -41,9 +49,9 @@ const Cart = () => {
   if (store.cart.length === 0) {
     return (
       <div style={{ minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "16px", padding: "40px" }}>
-        <div style={{ fontSize: "5rem" }}>ðŸ›’</div>
-        <h3 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)" }}>Tu carrito estÃ¡ vacÃ­o</h3>
-        <p style={{ color: "var(--text-muted)" }}>AgregÃ¡ productos frescos desde nuestra tienda</p>
+        <div style={{ fontSize: "5rem" }}>??</div>
+        <h3 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)" }}>Tu carrito está vacío</h3>
+        <p style={{ color: "var(--text-muted)" }}>Agregá productos frescos desde nuestra tienda</p>
         <Link to="/" className="btn btn-accent" style={{ marginTop: "8px" }}>
           Ver productos
         </Link>
@@ -55,7 +63,7 @@ const Cart = () => {
     <div style={{ padding: "40px 0", background: "var(--surface)", minHeight: "80vh" }}>
       <div className="container">
         <h2 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)", fontSize: "2.2rem", marginBottom: "8px" }}>
-          ðŸ›’ Tu carrito
+          ?? Tu carrito
         </h2>
         <p style={{ color: "var(--text-muted)", marginBottom: "32px" }}>
           {store.cart.length} {store.cart.length === 1 ? "producto" : "productos"} en tu carrito
@@ -87,7 +95,7 @@ const Cart = () => {
                   }}
                 >
                   <img
-                    src={item.image_url || "https://placehold.co/72x72/e8f5e9/2e7d32?text=ðŸ¥¦"}
+                    src={item.image_url || "https://placehold.co/72x72/e8f5e9/2e7d32?text=??"}
                     alt={item.name}
                     style={{ width: "72px", height: "72px", objectFit: "cover", borderRadius: "12px", flexShrink: 0 }}
                   />
@@ -95,7 +103,7 @@ const Cart = () => {
                   <div style={{ flex: 1, minWidth: "140px" }}>
                     <div style={{ fontWeight: 700, color: "var(--text)", fontSize: "1rem" }}>{item.name}</div>
                     <div style={{ color: "var(--text-muted)", fontSize: "0.83rem", marginTop: "2px" }}>
-                      {item.category} Â· ${parseFloat(item.price).toFixed(2)} / {item.unit}
+                      {item.category} · ${parseFloat(item.price).toFixed(2)} / {item.unit}
                     </div>
                   </div>
 
@@ -104,7 +112,7 @@ const Cart = () => {
                       onClick={() => actions.updateCartQuantity(item.id, item.quantity - 1)}
                       style={{ width: "36px", height: "36px", border: "none", background: "var(--surface-2)", color: "var(--accent)", fontWeight: 700, cursor: "pointer" }}
                     >
-                      âˆ’
+                      -
                     </button>
                     <span style={{ width: "40px", textAlign: "center", fontWeight: 700, color: "var(--text)" }}>
                       {item.quantity}
@@ -150,14 +158,14 @@ const Cart = () => {
                   <span style={{ color: "var(--text)", fontWeight: 600 }}>${subtotal.toFixed(2)}</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.9rem", color: "var(--text-muted)" }}>
-                  <span>EnvÃ­o</span>
+                  <span>Envío</span>
                   <span style={{ color: shipping === 0 ? "var(--accent)" : "var(--text)", fontWeight: 600 }}>
-                    {shipping === 0 ? "Â¡GRATIS! ðŸŽ‰" : "$" + shipping.toFixed(2)}
+                    {shipping === 0 ? "¡GRATIS! ??" : "$" + shipping.toFixed(2)}
                   </span>
                 </div>
                 {shipping > 0 && (
                   <div style={{ padding: "8px 12px", background: "rgba(46,125,50,0.08)", borderRadius: "8px", fontSize: "0.8rem", color: "var(--accent)" }}>
-                    ðŸšš SumÃ¡ ${(SHIPPING_THRESHOLD - subtotal).toFixed(2)} mÃ¡s para envÃ­o gratis
+                    ?? Sumá ${(SHIPPING_THRESHOLD - subtotal).toFixed(2)} más para envío gratis
                   </div>
                 )}
               </div>
@@ -173,9 +181,11 @@ const Cart = () => {
                 <button
                   className="btn btn-accent w-100"
                   onClick={handleOrder}
+                  disabled={isProcessing}
                   style={{ padding: "14px", fontSize: "1rem", fontWeight: 700 }}
                 >
-                  <i className="fas fa-check-circle me-2"></i>Finalizar compra
+                  <i className={isProcessing ? "fas fa-spinner fa-spin me-2" : "fas fa-check-circle me-2"}></i>
+                  {isProcessing ? "Procesando..." : "Finalizar compra"}
                 </button>
               ) : (
                 <div>
@@ -184,16 +194,16 @@ const Cart = () => {
                     className="btn btn-accent w-100 mb-2"
                     style={{ padding: "14px", fontSize: "1rem", fontWeight: 700 }}
                   >
-                    <i className="fas fa-sign-in-alt me-2"></i>Iniciar sesiÃ³n para comprar
+                    <i className="fas fa-sign-in-alt me-2"></i>Iniciar sesión para comprar
                   </Link>
                   <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", textAlign: "center", marginBottom: 0 }}>
-                    Â¿No tenÃ©s cuenta? <Link to="/signup" style={{ color: "var(--accent)" }}>Registrate gratis</Link>
+                    ¿No tenés cuenta? <Link to="/signup" style={{ color: "var(--accent)" }}>Registrate gratis</Link>
                   </p>
                 </div>
               )}
 
               <div style={{ marginTop: "20px", display: "flex", justifyContent: "center", gap: "12px" }}>
-                {["ðŸ”’ Pago seguro", "ðŸŒ¿ Fresco garantizado"].map((t) => (
+                {["?? Pago seguro", "?? Fresco garantizado"].map((t) => (
                   <span key={t} style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{t}</span>
                 ))}
               </div>
