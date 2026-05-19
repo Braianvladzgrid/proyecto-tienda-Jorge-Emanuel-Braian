@@ -164,14 +164,16 @@ const Home = () => {
             <div key={item.id} className="col-xl-3 col-lg-4 col-md-6">
               <div className="card-dark h-100 style-card" style={{ borderRadius: "16px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
                 <div style={{ position: "relative", paddingTop: "75%", background: "var(--surface-2)" }}>
-                  <img
-                    src={item.image_url || "https://placehold.co/400x300/e8f5e9/2e7d32?text=🥬"}
-                    alt={item.name}
-                    style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }}
-                  />
-                  <span style={{ position: "absolute", top: "12px", left: "12px", background: "var(--accent)", color: "#ffffff", padding: "4px 10px", borderRadius: "12px", fontSize: "0.75rem", fontWeight: 600 }}>
-                    {item.category}
-                  </span>
+                  <Link to={"/product/" + item.id} className="text-decoration-none d-flex flex-column h-100" style={{ color: "var(--text)" }}>
+                    <img
+                      src={item.image_url || "https://placehold.co/400x300/e8f5e9/2e7d32?text=🥬"}
+                      alt={item.name}
+                      style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                    <span style={{ position: "absolute", top: "12px", left: "12px", background: "var(--accent)", color: "#ffffff", padding: "4px 10px", borderRadius: "12px", fontSize: "0.75rem", fontWeight: 600 }}>
+                      {item.category}
+                    </span>
+                  </Link>
                   <button style={{ position: "absolute", top: "12px", right: "12px", background: "rgba(0,0,0,0.4)", border: "none", color: "#ffffff", borderRadius: "50%", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
                     <i className="far fa-heart"></i>
                   </button>
@@ -179,8 +181,10 @@ const Home = () => {
 
                 <div style={{ padding: "20px", flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <div>
-                    <h5 style={{ fontWeight: 700, marginBottom: "6px", fontSize: "1.15rem" }}>{item.name}</h5>
-                    <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "16px" }}>{item.description}</p>
+                    <Link to={"/product/" + item.id} className="text-decoration-none d-flex flex-column h-100" style={{ color: "var(--text)" }}>
+                      <h5 style={{ fontWeight: 700, marginBottom: "6px", fontSize: "1.15rem" }}>{item.name}</h5>
+                      <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "16px" }}>{item.description}</p>
+                    </Link>
                   </div>
 
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -202,7 +206,7 @@ const Home = () => {
           ))}
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
