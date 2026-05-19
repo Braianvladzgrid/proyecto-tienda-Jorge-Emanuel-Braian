@@ -19,7 +19,7 @@ const Cart = () => {
     setIsProcessing(true);
     const success = await actions.checkoutOrder();
     setIsProcessing(false);
-    
+
     if (success) {
       setOrdered(true);
       setTimeout(() => {
@@ -27,7 +27,7 @@ const Cart = () => {
         navigate("/");
       }, 3000);
     } else {
-      alert("Hubo un problema al procesar tu compra. Por favor, reintentá más tarde.");
+      alert("Hubo un problema al procesar tu compra. Por favor, reintentï¿½ mï¿½s tarde.");
     }
   };
 
@@ -36,10 +36,10 @@ const Cart = () => {
       <div style={{ minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "16px", padding: "40px" }}>
         <div style={{ fontSize: "5rem" }}>??</div>
         <h2 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)", fontSize: "2.2rem" }}>
-          ¡Pedido confirmado!
+          ï¿½Pedido confirmado!
         </h2>
         <p style={{ color: "var(--text-muted)", fontSize: "1rem" }}>
-          Tu pedido fue recibido. Te avisamos cuando esté en camino ??
+          Tu pedido fue recibido. Te avisamos cuando estï¿½ en camino ??
         </p>
         <div style={{ width: "40px", height: "4px", background: "var(--accent)", borderRadius: "2px", animation: "grow 3s linear forwards" }}></div>
       </div>
@@ -50,8 +50,8 @@ const Cart = () => {
     return (
       <div style={{ minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "16px", padding: "40px" }}>
         <div style={{ fontSize: "5rem" }}>??</div>
-        <h3 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)" }}>Tu carrito está vacío</h3>
-        <p style={{ color: "var(--text-muted)" }}>Agregá productos frescos desde nuestra tienda</p>
+        <h3 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)" }}>Tu carrito estï¿½ vacï¿½o</h3>
+        <p style={{ color: "var(--text-muted)" }}>Agregï¿½ productos frescos desde nuestra tienda</p>
         <Link to="/" className="btn btn-accent" style={{ marginTop: "8px" }}>
           Ver productos
         </Link>
@@ -103,7 +103,7 @@ const Cart = () => {
                   <div style={{ flex: 1, minWidth: "140px" }}>
                     <div style={{ fontWeight: 700, color: "var(--text)", fontSize: "1rem" }}>{item.name}</div>
                     <div style={{ color: "var(--text-muted)", fontSize: "0.83rem", marginTop: "2px" }}>
-                      {item.category} · ${parseFloat(item.price).toFixed(2)} / {item.unit}
+                      {item.category} ï¿½ ${parseFloat(item.price).toFixed(2)} / {item.unit}
                     </div>
                   </div>
 
@@ -158,14 +158,14 @@ const Cart = () => {
                   <span style={{ color: "var(--text)", fontWeight: 600 }}>${subtotal.toFixed(2)}</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.9rem", color: "var(--text-muted)" }}>
-                  <span>Envío</span>
+                  <span>Envï¿½o</span>
                   <span style={{ color: shipping === 0 ? "var(--accent)" : "var(--text)", fontWeight: 600 }}>
-                    {shipping === 0 ? "¡GRATIS! ??" : "$" + shipping.toFixed(2)}
+                    {shipping === 0 ? "ï¿½GRATIS! ??" : "$" + shipping.toFixed(2)}
                   </span>
                 </div>
                 {shipping > 0 && (
                   <div style={{ padding: "8px 12px", background: "rgba(46,125,50,0.08)", borderRadius: "8px", fontSize: "0.8rem", color: "var(--accent)" }}>
-                    ?? Sumá ${(SHIPPING_THRESHOLD - subtotal).toFixed(2)} más para envío gratis
+                    ?? Sumï¿½ ${(SHIPPING_THRESHOLD - subtotal).toFixed(2)} mï¿½s para envï¿½o gratis
                   </div>
                 )}
               </div>
@@ -194,10 +194,10 @@ const Cart = () => {
                     className="btn btn-accent w-100 mb-2"
                     style={{ padding: "14px", fontSize: "1rem", fontWeight: 700 }}
                   >
-                    <i className="fas fa-sign-in-alt me-2"></i>Iniciar sesión para comprar
+                    <i className="fas fa-sign-in-alt me-2"></i>Iniciar sesiï¿½n para comprar
                   </Link>
                   <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", textAlign: "center", marginBottom: 0 }}>
-                    ¿No tenés cuenta? <Link to="/signup" style={{ color: "var(--accent)" }}>Registrate gratis</Link>
+                    ï¿½No tenï¿½s cuenta? <Link to="/signup" style={{ color: "var(--accent)" }}>Registrate gratis</Link>
                   </p>
                 </div>
               )}
