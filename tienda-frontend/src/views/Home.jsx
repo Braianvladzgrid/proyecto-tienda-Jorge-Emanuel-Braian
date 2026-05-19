@@ -132,9 +132,11 @@ const Home = () => {
             </span>
             <input
               type="text"
-              className="form-control-dark"
+              className="form-control-dark ps-5"
               placeholder="Buscar tomate, lechuga..."
               style={{ paddingLeft: "40px", borderRadius: "10px", width: "100%", height: "42px" }}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
         </div>
