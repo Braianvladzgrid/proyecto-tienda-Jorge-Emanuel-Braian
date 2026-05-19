@@ -100,7 +100,7 @@ const Home = () => {
 
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)", padding: "16px 0", background: "rgba(255,255,255,0.01)" }}>
         <div className="container d-flex justify-content-center gap-5 align-items-center flex-wrap" style={{ fontSize: "1.4rem" }}>
-          {[{ emoji: "🥬", name: "Verduras" }, { emoji: "🍎", name: "Frutas" }, { emoji: "🌿", name: "Hierbas" }, { emoji: "🫚", name: "Condimentos" }, { emoji: "🥚", name: "Pecuarios" }, { emoji: "🍋", name: "Cítricos" }].map(({ emoji, name }) => (
+          {[{ emoji: "🥬", name: "Verduras" }, { emoji: "🍎", name: "Frutas" }, { emoji: "🌿", name: "Hierbas" }, { emoji: "🫚", name: "Condimentos" }, { emoji: "🥚", name: "Pecuarios" }].map(({ emoji, name }) => (
             <div key={name} className="text-center" style={{ cursor: "pointer" }} onClick={() => setActiveCategory(name)}>
               <div style={{ fontSize: "2rem" }}>{emoji}</div>
               <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent)" }}>{name}</div>
