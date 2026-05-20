@@ -13,6 +13,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
     is_active = db.Column(db.Boolean(), nullable=False, default=True)
+    is_admin = db.Column(db.Boolean(), nullable=False, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     favorites = db.relationship('Favorite', backref='user', lazy=True, cascade='all, delete-orphan')
@@ -32,6 +33,7 @@ class User(db.Model):
             "lastName": self.last_name,
             "email": self.email,
             "is_active": self.is_active,
+            "isAdmin": bool(self.is_admin),
         }
 
 
