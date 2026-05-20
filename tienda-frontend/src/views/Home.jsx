@@ -6,6 +6,7 @@ import ProductCard from "../components/ProductCard";
 const SIDEBAR_CATEGORIES = [
   { id: "Todos", label: "Todos", emoji: "🧺" },
   { id: "Frutas", label: "Frutas", emoji: "🍎" },
+  { id: "Cítricos", label: "Cítricos", emoji: "🍊" },
   { id: "Verduras", label: "Verduras", emoji: "🥬" },
   { id: "Pecuarios", label: "Pecuarios", emoji: "🥚" },
   { id: "Hierbas", label: "Hierbas", emoji: "🌿" },

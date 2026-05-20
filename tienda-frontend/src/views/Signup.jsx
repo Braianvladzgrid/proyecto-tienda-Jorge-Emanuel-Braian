@@ -18,7 +18,7 @@ const Signup = () => {
     if (store.error) actions.clearMessage();
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.password !== form.confirm) {
       setFieldError("Las contraseñas no coinciden.");
@@ -29,7 +29,7 @@ const Signup = () => {
       return;
     }
     setLoading(true);
-    const ok = actions.signup(form.firstName, form.lastName, form.email, form.password);
+    const ok = await actions.signup(form.firstName, form.lastName, form.email, form.password);
     setLoading(false);
     if (ok) navigate("/login");
   };

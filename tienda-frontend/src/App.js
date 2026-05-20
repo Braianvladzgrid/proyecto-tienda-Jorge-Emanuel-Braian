@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
+import AdminRoute from "./components/AdminRoute";
 import Home from "./views/Home";
 import ProductDetail from "./views/ProductDetail";
 import Login from "./views/Login";
@@ -11,6 +12,7 @@ import ForgotPassword from "./views/ForgotPassword";
 import Cart from "./views/Cart";
 import Favorites from "./views/Favorites";
 import Profile from "./views/Profile";
+import Orders from "./views/Orders";
 import { Admin } from "./views/Admin";
 
 const AnimatedRoutes = () => {
@@ -26,7 +28,8 @@ const AnimatedRoutes = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/favorites" element={<PrivateRoute><Favorites /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-        <Route path="/admin" element={<PrivateRoute><Admin /></PrivateRoute>} />
+        <Route path="/orders" element={<PrivateRoute><Orders /></PrivateRoute>} />
+        <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
       </Routes>
     </div>
   );

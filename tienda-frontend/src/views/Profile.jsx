@@ -20,9 +20,9 @@ const Profile = () => {
     setSaved(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    actions.updateProfile(form);
+    await actions.updateProfile(form);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };

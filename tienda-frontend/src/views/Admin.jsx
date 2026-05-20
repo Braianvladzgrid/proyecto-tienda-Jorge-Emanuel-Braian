@@ -1,20 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { apiFetch, apiUploadImage } from "../api/client";
+import { Context } from "../layout";
+import { adminCopy as t } from "../copy/adminStrings";
+
+const EMPTY = {
+  id: null,
+  name: "",
+  description: "",
+  price: "",
+  stock: "",
+  unit: "pza",
+  category: "Verduras",
+  image_url: "",
+};
+
+const CATEGORIES = [
+  "Verduras",
+  "Frutas",
+  "Cítricos",
+  "Hierbas",
+  "Condimentos",
+  "Pecuarios",
+];
 
 export const Admin = () => {
+  const { actions } = useContext(Context);
   const [products, setProducts] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState({
-    id: null,
-    name: "",
-    description: "",
-    price: "",
-    stock: "",
-    unit: "pza",
-    category: "Verduras",
-    image_url: ""
-  });
-
-  const categories = ["Verduras", "Frutas", "Hierbas", "Condimentos", "Pecuarios", "C\u00edtricos"];
+  const [currentProduct, setCurrentProduct] = useState(EMPTY);
+  const [uploading, setUploading] = useState(false);
+  const [statusMsg, setStatusMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     loadProducts();
@@ -22,13 +38,11 @@ export const Admin = () => {
 
   const loadProducts = async () => {
     try {
-      const response = await fetch(`${process.env.BACKEND_URL}/api/products`);
-      if (response.ok) {
-        const data = await response.json();
-        setProducts(data);
-      }
-    } catch (error) {
-      console.error(error);
+      const data = await apiFetch("/products", { token: null });
+      setProducts(data);
+      actions.getProducts();
+    } catch (err) {
+      setErrorMsg(err.message);
     }
   };
 
@@ -36,94 +50,104 @@ export const Admin = () => {
     setCurrentProduct({ ...currentProduct, [e.target.name]: e.target.value });
   };
 
+  const handleImageFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setStatusMsg("");
+    setErrorMsg("");
+    try {
+      const data = await apiUploadImage(file);
+      setCurrentProduct((p) => ({ ...p, image_url: data.image_url }));
+      setStatusMsg(t.uploadOk);
+    } catch (err) {
+      setErrorMsg(err.message || t.uploadFail);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = sessionStorage.getItem("token");
-    const url = isEditing
-      ? `${process.env.BACKEND_URL}/api/products/${currentProduct.id}`
-      : `${process.env.BACKEND_URL}/api/products`;
-
-    const method = isEditing ? "PUT" : "POST";
+    setErrorMsg("");
+    const body = {
+      name: currentProduct.name,
+      description: currentProduct.description,
+      price: parseFloat(currentProduct.price),
+      stock: parseInt(currentProduct.stock, 10),
+      unit: currentProduct.unit,
+      category: currentProduct.category,
+      image_url: currentProduct.image_url,
+    };
 
     try {
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          name: currentProduct.name,
-          description: currentProduct.description,
-          price: parseFloat(currentProduct.price),
-          stock: parseInt(currentProduct.stock),
-          unit: currentProduct.unit,
-          category: currentProduct.category,
-          image_url: currentProduct.image_url
-        })
-      });
-
-      if (response.ok) {
-        resetForm();
-        loadProducts();
+      if (isEditing) {
+        await apiFetch(`/products/${currentProduct.id}`, { method: "PUT", body });
+      } else {
+        await apiFetch("/products", { method: "POST", body });
       }
-    } catch (error) {
-      console.error(error);
+      resetForm();
+      loadProducts();
+      setStatusMsg(isEditing ? "Producto actualizado." : "Producto creado.");
+    } catch (err) {
+      setErrorMsg(err.message);
     }
   };
 
   const handleEdit = (product) => {
     setIsEditing(true);
-    setCurrentProduct(product);
+    setCurrentProduct({
+      ...product,
+      price: String(product.price),
+      stock: String(product.stock),
+    });
+    setStatusMsg("");
   };
 
   const handleDelete = async (id) => {
-    const token = sessionStorage.getItem("token");
+    if (!window.confirm("¿Eliminar este producto del catálogo?")) return;
     try {
-      const response = await fetch(`${process.env.BACKEND_URL}/api/products/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      });
-      if (response.ok) {
-        loadProducts();
-      }
-    } catch (error) {
-      console.error(error);
+      await apiFetch(`/products/${id}`, { method: "DELETE" });
+      loadProducts();
+    } catch (err) {
+      setErrorMsg(err.message);
     }
   };
 
   const resetForm = () => {
     setIsEditing(false);
-    setCurrentProduct({
-      id: null,
-      name: "",
-      description: "",
-      price: "",
-      stock: "",
-      unit: "pza",
-      category: "Verduras",
-      image_url: ""
-    });
+    setCurrentProduct(EMPTY);
+    setErrorMsg("");
   };
 
   return (
     <div className="page">
       <div className="container">
         <header className="page-header">
-          <h1 className="page-header__title">Panel de administraci\u00f3n</h1>
-          <p className="page-header__subtitle">Gestion\u00e1 el inventario de La Verde</p>
+          <h1 className="page-header__title">{t.title}</h1>
+          <p className="page-header__subtitle">{t.subtitle}</p>
         </header>
+
+        {errorMsg && (
+          <div className="ui-alert ui-alert--error mb-3">
+            <i className="fas fa-exclamation-circle"></i> {errorMsg}
+          </div>
+        )}
+        {statusMsg && (
+          <div className="ui-alert ui-alert--success mb-3">
+            <i className="fas fa-check-circle"></i> {statusMsg}
+          </div>
+        )}
+
         <div className="row g-4">
-          <div className="col-md-4">
+          <div className="col-lg-4">
             <div className="ui-panel p-4">
               <h3 className="mb-4 fw-bold">
-                {isEditing ? "Editar Producto" : "Nuevo Producto"}
+                {isEditing ? t.editProduct : t.newProduct}
               </h3>
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label className="ui-label">Nombre del Producto</label>
+                  <label className="ui-label">Nombre</label>
                   <input
                     type="text"
                     name="name"
@@ -134,15 +158,17 @@ export const Admin = () => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="ui-label">Categor\u00eda</label>
+                  <label className="ui-label">{t.category}</label>
                   <select
                     name="category"
                     className="form-control-dark"
                     value={currentProduct.category}
                     onChange={handleChange}
                   >
-                    {categories.map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
+                    {CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -171,62 +197,93 @@ export const Admin = () => {
                     />
                   </div>
                 </div>
-                <div className="row">
-                  <div className="col-12 mb-3">
-                    <label className="ui-label">Unidad de Medida</label>
-                    <input
-                      type="text"
-                      name="unit"
-                      className="form-control-dark"
-                      placeholder="ej. kg, pza, atado"
-                      value={currentProduct.unit}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
                 <div className="mb-3">
-                  <label className="ui-label">URL Imagen</label>
+                  <label className="ui-label">Unidad</label>
+                  <input
+                    type="text"
+                    name="unit"
+                    className="form-control-dark"
+                    placeholder="kg, pza, atado..."
+                    value={currentProduct.unit}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label className="ui-label">{t.imageUpload}</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="form-control-dark"
+                    onChange={handleImageFile}
+                    disabled={uploading}
+                  />
+                  {uploading && (
+                    <p className="small text-muted-theme mt-1">
+                      <span className="spinner-verde me-1"></span>
+                      {t.uploading}
+                    </p>
+                  )}
+                </div>
+
+                <div className="mb-3">
+                  <label className="ui-label">{t.imageUrl}</label>
                   <input
                     type="url"
                     name="image_url"
                     className="form-control-dark"
+                    placeholder="https://..."
                     value={currentProduct.image_url}
                     onChange={handleChange}
                   />
                 </div>
+
+                {currentProduct.image_url && (
+                  <div className="mb-3 admin-image-preview">
+                    <label className="ui-label">{t.imagePreview}</label>
+                    <img src={currentProduct.image_url} alt="Vista previa" />
+                  </div>
+                )}
+
                 <div className="mb-3">
-                  <label className="ui-label">Descripci\u00f3n</label>
+                  <label className="ui-label">{t.description}</label>
                   <textarea
                     name="description"
                     className="form-control-dark"
                     rows="3"
                     value={currentProduct.description}
                     onChange={handleChange}
-                  ></textarea>
+                  />
                 </div>
-                <div className="d-flex gap-2 justify-content-end mt-4">
+
+                <div className="d-flex gap-2 justify-content-end">
                   {isEditing && (
-                    <button type="button" className="btn btn-outline-accent" onClick={resetForm}>
+                    <button
+                      type="button"
+                      className="btn btn-outline-accent"
+                      onClick={resetForm}
+                    >
                       Cancelar
                     </button>
                   )}
                   <button type="submit" className="btn btn-accent">
-                    {isEditing ? "Guardar Cambios" : "Agregar Canasta"}
+                    {isEditing ? t.saveChanges : t.addProduct}
                   </button>
                 </div>
               </form>
             </div>
           </div>
 
-          <div className="col-md-8">
+          <div className="col-lg-8">
             <div className="ui-panel p-4">
-              <h3 className="mb-4 fw-bold">Inventario de Productos</h3>
+              <h3 className="mb-4 fw-bold">{t.inventory}</h3>
               <div className="table-responsive">
                 <table className="table-verde">
                   <thead>
                     <tr>
+                      <th></th>
                       <th>Producto</th>
-                      <th>Categor\u00eda</th>
+                      <th>{t.category}</th>
                       <th>Precio</th>
                       <th>Stock</th>
                       <th className="text-end">Acciones</th>
@@ -235,11 +292,23 @@ export const Admin = () => {
                   <tbody>
                     {products.map((product) => (
                       <tr key={product.id}>
-                        <td className="font-weight-bold">{product.name}</td>
+                        <td>
+                          <img
+                            src={
+                              product.image_url ||
+                              "https://placehold.co/48x48/e8f5e9/2e7d32?text=+"
+                            }
+                            alt=""
+                            className="admin-table-thumb"
+                          />
+                        </td>
+                        <td className="fw-bold">{product.name}</td>
                         <td>
                           <span className="category-chip">{product.category}</span>
                         </td>
-                        <td>${product.price} / {product.unit}</td>
+                        <td>
+                          ${product.price} / {product.unit}
+                        </td>
                         <td>{product.stock}</td>
                         <td className="text-end">
                           <div className="d-flex gap-2 justify-content-end">
@@ -252,7 +321,7 @@ export const Admin = () => {
                             </button>
                             <button
                               type="button"
-                              className="btn btn-accent btn-sm admin-btn-delete"
+                              className="btn btn-accent btn-sm"
                               onClick={() => handleDelete(product.id)}
                             >
                               Eliminar
@@ -263,8 +332,8 @@ export const Admin = () => {
                     ))}
                     {products.length === 0 && (
                       <tr>
-                        <td colSpan="5" className="text-center py-4 text-muted">
-                          No hay productos cargados en la canasta.
+                        <td colSpan="6" className="text-center py-4 text-muted">
+                          {t.noProducts}
                         </td>
                       </tr>
                     )}

@@ -1,144 +1,34 @@
-const API = "http://127.0.0.1:3001/api";
+import {
+  apiFetch,
+  mapCartFromApi,
+  mapFavoritesFromApi,
+} from "./api/client";
+import { CATALOG_FALLBACK } from "./data/catalogFallback";
 
-const prodSample = [
-  {
-    id: 3,
-    name: "Manzana Roja",
-    stock: 10,
-    unit: "kg",
-    category: "Frutas",
-    description:
-      "Manzana gala delicious, dulce y crujiente. Cosecha de temporada.",
-    price: 60,
-    image_url:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZkWusYYJvr1c9Ijx2DyAAtfW9evxbguavUA&s",
-  },
-  {
-    id: 2,
-    name: "Lechuga Bola",
-    stock: 24,
-    unit: "pza",
-    category: "Verduras",
-    description: "Lechuga tipo iceberg, fresca y crocante.",
-    price: 30,
-    image_url:
-      "https://www.grillhouse.mx/cdn/shop/files/romana_400x.jpg?v=1753147574",
-  },
-  {
-    id: 1,
-    name: "Huevo Rojo",
-    stock: 50,
-    unit: "docena",
-    category: "Pecuarios",
-    description: "Huevo blanco de gallina, fresco del día.",
-    price: 55,
-    image_url:
-      "https://clickabasto.com/cdn/shop/products/huevo_62ca4251-c788-4b21-8b46-cc66300781f6_355x356.jpg?v=1654034598",
-  },
-  {
-    id: 5,
-    name: "Pechuga de Pollo",
-    stock: 7,
-    unit: "kg",
-    category: "Pecuarios",
-    description: "Pechuga de pollo entera, sin hueso.",
-    price: 249,
-    image_url:
-      "https://clickabasto.com/cdn/shop/products/5e997e247257a_948x465.jpg?v=1655781934",
-  },
-  {
-    id: 72,
-    name: "Perejil",
-    stock: 17,
-    unit: "pza",
-    category: "Hierbas",
-    description: "Manojo de Perejil de 250g, fresco y aromático.",
-    price: 40,
-    image_url:
-      "https://clickabasto.com/cdn/shop/files/perejil_360x360.webp?v=1735241032",
-  },
-  {
-    id: 8,
-    name: "Tomate Perita",
-    stock: 30,
-    unit: "kg",
-    category: "Verduras",
-    description: "Tomate perita maduro, ideal para salsas caseras.",
-    price: 45,
-    image_url:
-      "https://clickabasto.com/cdn/shop/products/Jitomate-saladet_695x695.jpg?v=1655778735",
-  },
-  {
-    id: 9,
-    name: "Banana",
-    stock: 40,
-    unit: "kg",
-    category: "Frutas",
-    description: "Banana de primera calidad, madura y dulce.",
-    price: 35,
-    image_url:
-      "https://clickabasto.com/cdn/shop/products/download_1_221f856c-ddb8-4301-86b9-cefa5a13d4bf_225x225.jpg?v=1655781816",
-  },
-  {
-    id: 10,
-    name: "Albahaca",
-    stock: 12,
-    unit: "pza",
-    category: "Hierbas",
-    description: "Manojo de albahaca fresca, ideal para pastas y ensaladas.",
-    price: 38,
-    image_url:
-      "https://clickabasto.com/cdn/shop/products/albahaca-500x345_500x345.jpg?v=1655680779",
-  },
-  {
-    id: 15,
-    name: "Oregano",
-    stock: 38,
-    unit: "pza",
-    category: "Condimentos",
-    description:
-      "Condimento ideal para elaborar salsa pomodoro, aderezos, vinagretas o aromatizar diversos platillos",
-    price: 38,
-    image_url:
-      "https://clickabasto.com/cdn/shop/products/oregano_1_3bd647cc-7e66-48ed-a553-94b8d20c19e9_695x695.jpg?v=1654034474",
-  },
-];
+const prodSample = CATALOG_FALLBACK;
+const PRODUCTS_CACHE_KEY = "laverde_products_v2";
 
-const userSample = [
-  {
-    id: 1,
-    firstName: "Emanuel",
-    lastName: "García",
-    email: "emanuel@gmail.com",
-    password: "12345",
-  },
-  {
-    id: 2,
-    firstName: "Jorge",
-    lastName: "López",
-    email: "jorge@gmail.com",
-    password: "12345",
-  },
-  {
-    id: 3,
-    firstName: "Braian",
-    lastName: "Vlad",
-    email: "braian@gmail.com",
-    password: "12345",
-  },
-];
+const readGuestCart = () => {
+  try {
+    return JSON.parse(localStorage.getItem("laverde_cart") || "[]");
+  } catch {
+    return [];
+  }
+};
+
+const saveGuestCart = (cart) => {
+  localStorage.setItem("laverde_cart", JSON.stringify(cart));
+};
 
 const getState = ({ getStore, getActions, setStore }) => ({
   store: {
     products: JSON.parse(
-      localStorage.getItem("laverde_products") || JSON.stringify(prodSample),
+      localStorage.getItem(PRODUCTS_CACHE_KEY) || JSON.stringify(prodSample),
     ),
     product: {},
-    cart: JSON.parse(localStorage.getItem("laverde_cart") || "[]"),
-    favorites: JSON.parse(localStorage.getItem("laverde_favorites") || "[]"),
-    users: JSON.parse(
-      localStorage.getItem("laverde_users") || JSON.stringify(userSample),
-    ),
+    cart: readGuestCart(),
+    favorites: [],
+    orders: [],
     token: localStorage.getItem("laverde_token") || null,
     user: JSON.parse(localStorage.getItem("laverde_user") || "null"),
     error: null,
@@ -148,8 +38,63 @@ const getState = ({ getStore, getActions, setStore }) => ({
   actions: {
     clearMessage: () => setStore({ message: null, error: null }),
 
-    signup: (firstName, lastName, email, password) => {
-      const store = getStore();
+    fetchCart: async () => {
+      const { token } = getStore();
+      if (!token) return;
+      try {
+        const data = await apiFetch("/cart");
+        const cart = mapCartFromApi(data);
+        setStore({ cart });
+      } catch {
+        setStore({ cart: [] });
+      }
+    },
+
+    fetchFavorites: async () => {
+      const { token } = getStore();
+      if (!token) {
+        setStore({ favorites: [] });
+        return;
+      }
+      try {
+        const data = await apiFetch("/favorites");
+        setStore({ favorites: mapFavoritesFromApi(data) });
+      } catch {
+        setStore({ favorites: [] });
+      }
+    },
+
+    mergeGuestCartToApi: async () => {
+      const guest = readGuestCart();
+      for (const item of guest) {
+        try {
+          await apiFetch("/cart", {
+            method: "POST",
+            body: { product_id: item.id, quantity: item.quantity || 1 },
+          });
+        } catch {
+          /* item ya en carrito o sin stock */
+        }
+      }
+      localStorage.removeItem("laverde_cart");
+    },
+
+    syncSession: async () => {
+      const { token } = getStore();
+      if (!token) return;
+      try {
+        const user = await apiFetch("/me");
+        localStorage.setItem("laverde_user", JSON.stringify(user));
+        setStore({ user });
+        await getActions().mergeGuestCartToApi();
+        await getActions().fetchCart();
+        await getActions().fetchFavorites();
+      } catch {
+        getActions().logout();
+      }
+    },
+
+    signup: async (firstName, lastName, email, password) => {
       if (
         !firstName?.trim() ||
         !lastName?.trim() ||
@@ -159,56 +104,77 @@ const getState = ({ getStore, getActions, setStore }) => ({
         setStore({ error: "Todos los campos son obligatorios." });
         return false;
       }
-      const exists = store.users.find((u) => u.email === email);
-      if (exists) {
-        setStore({ error: "Ya existe una cuenta con ese email." });
+      try {
+        await apiFetch("/signup", {
+          method: "POST",
+          body: { firstName, lastName, email, password },
+          token: null,
+        });
+        setStore({
+          error: null,
+          message: "Cuenta creada con éxito. ¡Ya podés iniciar sesión!",
+        });
+        return true;
+      } catch (err) {
+        const isNetwork =
+          err.message === "Failed to fetch" || err.name === "TypeError";
+        setStore({
+          error: isNetwork
+            ? "No se pudo conectar al servidor. Ejecutá: python run_backend.py"
+            : err.data?.error || err.message || "No se pudo crear la cuenta.",
+        });
         return false;
       }
-      const newUser = { id: Date.now(), firstName, lastName, email, password };
-      const updatedUsers = [...store.users, newUser];
-      localStorage.setItem("laverde_users", JSON.stringify(updatedUsers));
-      setStore({
-        users: updatedUsers,
-        error: null,
-        message: "Cuenta creada con éxito. ¡Ya podés iniciar sesión!",
-      });
-      return true;
     },
 
-    login: (email, password) => {
-      const store = getStore();
-      const userMatch = store.users.find(
-        (u) => u.email === email && u.password === password,
-      );
-      if (!userMatch) {
-        setStore({ error: "Email o contraseña incorrectos." });
+    login: async (email, password) => {
+      try {
+        const data = await apiFetch("/login", {
+          method: "POST",
+          body: { email, password },
+          token: null,
+        });
+        localStorage.setItem("laverde_token", data.token);
+        localStorage.setItem("laverde_user", JSON.stringify(data.user));
+        setStore({ token: data.token, user: data.user, error: null });
+        await getActions().mergeGuestCartToApi();
+        await getActions().fetchCart();
+        await getActions().fetchFavorites();
+        return true;
+      } catch (err) {
+        const isNetwork =
+          err.message === "Failed to fetch" || err.name === "TypeError";
+        setStore({
+          error: isNetwork
+            ? "No se pudo conectar al servidor. ¿Está corriendo el backend? (python run_backend.py en la raíz del proyecto)"
+            : err.data?.error || "Email o contraseña incorrectos.",
+        });
         return false;
       }
-      const token = "token-" + userMatch.id + "-" + Date.now();
-      localStorage.setItem("laverde_token", token);
-      localStorage.setItem("laverde_user", JSON.stringify(userMatch));
-      setStore({ token, user: userMatch, error: null });
-      return true;
     },
 
     logout: () => {
       localStorage.removeItem("laverde_token");
       localStorage.removeItem("laverde_user");
       localStorage.removeItem("laverde_cart");
-      localStorage.removeItem("laverde_favorites");
-      setStore({ token: null, user: null, cart: [], favorites: [] });
+      setStore({
+        token: null,
+        user: null,
+        cart: [],
+        favorites: [],
+        orders: [],
+      });
     },
 
     getProducts: async () => {
       try {
-        const resp = await fetch(API + "/products");
-        if (!resp.ok) throw new Error();
-        const data = await resp.json();
-        localStorage.setItem("laverde_products", JSON.stringify(data));
+        const data = await apiFetch("/products", { token: null });
+        localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(data));
+        localStorage.removeItem("laverde_products");
         setStore({ products: data });
       } catch {
         const saved = JSON.parse(
-          localStorage.getItem("laverde_products") ||
+          localStorage.getItem(PRODUCTS_CACHE_KEY) ||
             JSON.stringify(prodSample),
         );
         setStore({ products: saved });
@@ -221,6 +187,17 @@ const getState = ({ getStore, getActions, setStore }) => ({
         (item) => Number(item.id) === Number(id),
       );
       setStore({ product: productMatch || {} });
+    },
+
+    getOrders: async () => {
+      const { token } = getStore();
+      if (!token) return;
+      try {
+        const orders = await apiFetch("/orders");
+        setStore({ orders });
+      } catch {
+        setStore({ orders: [] });
+      }
     },
 
     createProduct: (data) => {
@@ -259,92 +236,196 @@ const getState = ({ getStore, getActions, setStore }) => ({
       setStore({ products: updated });
     },
 
-    addToCart: (product, quantity = 1) => {
+    addToCart: async (product, quantity = 1) => {
+      const { token } = getStore();
+      if (token) {
+        try {
+          await apiFetch("/cart", {
+            method: "POST",
+            body: { product_id: product.id, quantity },
+          });
+          await getActions().fetchCart();
+        } catch (err) {
+          setStore({
+            error: err.data?.error || "No se pudo agregar al carrito.",
+          });
+        }
+        return;
+      }
+
       const store = getStore();
-      const existing = store.cart.find((item) => item.id === product.id);
+      const existing = store.cart.find(
+        (item) => Number(item.id) === Number(product.id),
+      );
       let updatedCart;
       if (existing) {
         updatedCart = store.cart.map((item) =>
-          item.id === product.id
+          Number(item.id) === Number(product.id)
             ? { ...item, quantity: item.quantity + quantity }
             : item,
         );
       } else {
         updatedCart = [...store.cart, { ...product, quantity }];
       }
-      localStorage.setItem("laverde_cart", JSON.stringify(updatedCart));
+      saveGuestCart(updatedCart);
       setStore({ cart: updatedCart });
     },
 
-    removeFromCart: (productId) => {
-      const store = getStore();
-      const updatedCart = store.cart.filter((item) => item.id !== productId);
-      localStorage.setItem("laverde_cart", JSON.stringify(updatedCart));
-      setStore({ cart: updatedCart });
-    },
-
-    updateCartQuantity: (productId, quantity) => {
-      if (quantity <= 0) {
-        getActions().removeFromCart(productId);
+    removeFromCart: async (productId) => {
+      const { token } = getStore();
+      if (token) {
+        try {
+          await apiFetch(`/cart/${productId}`, { method: "DELETE" });
+          await getActions().fetchCart();
+        } catch {
+          /* ignore */
+        }
         return;
       }
+
       const store = getStore();
-      const updatedCart = store.cart.map((item) =>
-        item.id === productId ? { ...item, quantity: Number(quantity) } : item,
+      const updatedCart = store.cart.filter(
+        (item) => Number(item.id) !== Number(productId),
       );
-      localStorage.setItem("laverde_cart", JSON.stringify(updatedCart));
+      saveGuestCart(updatedCart);
       setStore({ cart: updatedCart });
     },
 
-    clearCart: () => {
+    updateCartQuantity: async (productId, quantity) => {
+      if (quantity <= 0) {
+        await getActions().removeFromCart(productId);
+        return;
+      }
+
+      const { token } = getStore();
+      if (token) {
+        try {
+          await apiFetch(`/cart/${productId}`, {
+            method: "PUT",
+            body: { quantity: Number(quantity) },
+          });
+          await getActions().fetchCart();
+        } catch {
+          /* ignore */
+        }
+        return;
+      }
+
+      const store = getStore();
+      const updatedCart = store.cart.map((item) =>
+        Number(item.id) === Number(productId)
+          ? { ...item, quantity: Number(quantity) }
+          : item,
+      );
+      saveGuestCart(updatedCart);
+      setStore({ cart: updatedCart });
+    },
+
+    clearCart: async () => {
+      const { token } = getStore();
+      if (token) {
+        try {
+          await apiFetch("/cart", { method: "DELETE" });
+        } catch {
+          /* ignore */
+        }
+      }
       localStorage.removeItem("laverde_cart");
       setStore({ cart: [] });
     },
 
     checkoutOrder: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      localStorage.removeItem("laverde_cart");
-      setStore({ cart: [] });
-      return true;
-    },
-
-    toggleFavorite: (productId) => {
-      const store = getStore();
-      const isFav = store.favorites.some((f) => f.product_id === productId);
-      const updatedFavs = isFav
-        ? store.favorites.filter((f) => f.product_id !== productId)
-        : [...store.favorites, { product_id: productId }];
-      localStorage.setItem("laverde_favorites", JSON.stringify(updatedFavs));
-      setStore({ favorites: updatedFavs });
-    },
-
-    forgotPassword: (email) => {
-      const store = getStore();
-      const userMatch = store.users.find((u) => u.email === email);
-      if (!userMatch) {
-        setStore({ error: "No encontramos una cuenta con ese email." });
+      const { token, cart } = getStore();
+      if (!token) {
+        setStore({ error: "Iniciá sesión para confirmar tu pedido." });
         return false;
       }
-      setStore({
-        error: null,
-        message: "Te enviamos un enlace de recuperación a " + email,
-      });
-      return true;
+      if (!cart.length) {
+        setStore({ error: "Tu carrito está vacío." });
+        return false;
+      }
+      try {
+        await apiFetch("/orders", { method: "POST" });
+        await getActions().fetchCart();
+        setStore({ message: "Pedido confirmado con éxito." });
+        return true;
+      } catch (err) {
+        setStore({
+          error: err.data?.error || "No se pudo procesar el pedido.",
+        });
+        return false;
+      }
     },
 
-    updateProfile: (fields) => {
+    toggleFavorite: async (productId) => {
+      const { token } = getStore();
+      if (!token) {
+        setStore({ error: "Iniciá sesión para guardar favoritos." });
+        return;
+      }
+
       const store = getStore();
-      const updatedUser = { ...store.user, ...fields };
-      const updatedUsers = store.users.map((u) =>
-        u.id === updatedUser.id ? updatedUser : u,
+      const isFav = store.favorites.some(
+        (f) => Number(f.product_id) === Number(productId),
       );
-      localStorage.setItem("laverde_user", JSON.stringify(updatedUser));
-      localStorage.setItem("laverde_users", JSON.stringify(updatedUsers));
-      setStore({
-        user: updatedUser,
-        users: updatedUsers,
-        message: "Perfil actualizado con éxito.",
-      });
+
+      try {
+        if (isFav) {
+          await apiFetch(`/favorites/${productId}`, { method: "DELETE" });
+        } else {
+          await apiFetch("/favorites", {
+            method: "POST",
+            body: { product_id: productId },
+          });
+        }
+        await getActions().fetchFavorites();
+      } catch (err) {
+        setStore({
+          error: err.data?.error || "No se pudo actualizar favoritos.",
+        });
+      }
+    },
+
+    forgotPassword: async (email) => {
+      if (!email?.trim()) {
+        setStore({ error: "Ingresá tu email." });
+        return false;
+      }
+      try {
+        await apiFetch("/forgot-password", {
+          method: "POST",
+          body: { email },
+          token: null,
+        });
+        setStore({ error: null, message: null });
+        return true;
+      } catch (err) {
+        setStore({
+          error: err.data?.error || "No encontramos una cuenta con ese email.",
+        });
+        return false;
+      }
+    },
+
+    updateProfile: async (fields) => {
+      const { token } = getStore();
+      if (!token) return;
+      try {
+        const user = await apiFetch("/me", {
+          method: "PUT",
+          body: fields,
+        });
+        localStorage.setItem("laverde_user", JSON.stringify(user));
+        setStore({
+          user,
+          message: "Perfil actualizado con éxito.",
+          error: null,
+        });
+      } catch (err) {
+        setStore({
+          error: err.data?.error || "No se pudo actualizar el perfil.",
+        });
+      }
     },
   },
 });

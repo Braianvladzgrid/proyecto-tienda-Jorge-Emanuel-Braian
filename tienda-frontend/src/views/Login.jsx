@@ -20,7 +20,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const ok = actions.login(form.email, form.password);
+    const ok = await actions.login(form.email, form.password);
     setLoading(false);
     if (ok) navigate("/");
   };
@@ -84,7 +84,9 @@ const Login = () => {
       </p>
 
       <div className="ui-demo-hint">
-        Demo: <strong>emanuel@gmail.com</strong> / <strong>12345</strong>
+        Admin: <strong>admin@laverde.com</strong> / <strong>admin1234</strong>
+        <br />
+        O registrate en <strong>Registrate</strong> para cuenta de cliente.
       </div>
     </AuthLayout>
   );

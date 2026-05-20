@@ -87,7 +87,11 @@ const Navbar = () => {
               {store.token && (
                 <>
                   <NavLink to="/favorites" className={navClass}>Favoritos</NavLink>
+                  <NavLink to="/orders" className={navClass}>Mis pedidos</NavLink>
                   <NavLink to="/profile" className={navClass}>Mi cuenta</NavLink>
+                  {store.user?.isAdmin && (
+                    <NavLink to="/admin" className={navClass}>Admin</NavLink>
+                  )}
                 </>
               )}
             </div>

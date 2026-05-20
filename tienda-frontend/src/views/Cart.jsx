@@ -23,12 +23,11 @@ const Cart = () => {
 
     if (success) {
       setOrdered(true);
+      actions.clearMessage();
       setTimeout(() => {
         setOrdered(false);
-        navigate("/");
-      }, 3000);
-    } else {
-      alert("Hubo un problema al procesar tu compra. Por favor, reintentá más tarde.");
+        navigate("/orders");
+      }, 2500);
     }
   };
 
@@ -61,6 +60,12 @@ const Cart = () => {
           title="🧺 Tu carrito"
           subtitle={store.cart.length + " " + (store.cart.length === 1 ? "producto" : "productos") + " · Checkout"}
         />
+
+        {store.error && (
+          <div className="ui-alert ui-alert--error mb-4">
+            <i className="fas fa-exclamation-circle"></i> {store.error}
+          </div>
+        )}
 
         <div className="checkout-layout">
           <div>

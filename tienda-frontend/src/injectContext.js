@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Context } from "./layout";
 import getState from "./flux";
+import { setUnauthorizedHandler } from "./api/client";
 
 const injectContext = (PassedComponent) => {
   const StoreWrapper = (props) => {
@@ -23,7 +24,12 @@ const injectContext = (PassedComponent) => {
     }, []);
 
     useEffect(() => {
-      if (state) state.actions.getProducts();
+      if (!state) return;
+      setUnauthorizedHandler(() => {
+        if (stateRef.current?.actions) stateRef.current.actions.logout();
+      });
+      state.actions.getProducts();
+      if (state.store.token) state.actions.syncSession();
     }, [!!state]);
 
     if (!state) return null;
