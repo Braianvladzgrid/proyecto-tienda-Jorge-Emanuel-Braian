@@ -1,5 +1,5 @@
 """
-Catálogo La Verde — cada producto con image_url (Unsplash).
+Catalogo La Verde — cada producto con image_url (Wikimedia Commons, libre acceso).
 """
 
 LA_VERDE_CATALOG = [
@@ -10,7 +10,7 @@ LA_VERDE_CATALOG = [
         "category": "Frutas",
         "description": "Manzana gala, dulce y crujiente. Ideal para colaciones y ensaladas.",
         "price": 60,
-        "image_url": "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/600px-Red_Apple.jpg",
     },
     {
         "name": "Banana",
@@ -19,25 +19,25 @@ LA_VERDE_CATALOG = [
         "category": "Frutas",
         "description": "Banana de primera, madura y dulce.",
         "price": 35,
-        "image_url": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Fruit-2.jpg/600px-Banana-Fruit-2.jpg",
     },
     {
         "name": "Naranja Valencia",
         "stock": 40,
         "unit": "kg",
-        "category": "Cítricos",
+        "category": "Citricos",
         "description": "Jugosa y rica en vitamina C. Perfecta para exprimir.",
         "price": 42,
-        "image_url": "https://images.unsplash.com/photo-1547514704-5cec6d0adc86?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Clementine_whole.jpg/600px-Clementine_whole.jpg",
     },
     {
-        "name": "Limón",
+        "name": "Limon",
         "stock": 35,
         "unit": "kg",
-        "category": "Cítricos",
-        "description": "Limón fresco, ácido y aromático para cocina y bebidas.",
+        "category": "Citricos",
+        "description": "Limon fresco, acido y aromatico para cocina y bebidas.",
         "price": 38,
-        "image_url": "https://images.unsplash.com/photo-1590502593747-42d996d6c511?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Lemons.jpg/600px-Lemons.jpg",
     },
     {
         "name": "Palta Hass",
@@ -46,16 +46,16 @@ LA_VERDE_CATALOG = [
         "category": "Frutas",
         "description": "Palta cremosa, lista para guacamole o tostadas.",
         "price": 120,
-        "image_url": "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Avocado_Hass_-_single_and_halved.jpg/600px-Avocado_Hass_-_single_and_halved.jpg",
     },
     {
         "name": "Frutilla",
         "stock": 22,
         "unit": "kg",
         "category": "Frutas",
-        "description": "Frutillas rojas de estación, dulces y aromáticas.",
+        "description": "Frutillas rojas de estacion, dulces y aromaticas.",
         "price": 95,
-        "image_url": "https://images.unsplash.com/photo-1464960324104-9bf83a872e72?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Single_strawberry.jpg/600px-Single_strawberry.jpg",
     },
     {
         "name": "Uva Verde",
@@ -64,7 +64,7 @@ LA_VERDE_CATALOG = [
         "category": "Frutas",
         "description": "Uvas sin semilla, crocantes y refrescantes.",
         "price": 88,
-        "image_url": "https://images.unsplash.com/photo-1537640538966-79f521d9e648?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Kyoho-grape.jpg/600px-Kyoho-grape.jpg",
     },
     {
         "name": "Pera Williams",
@@ -73,7 +73,7 @@ LA_VERDE_CATALOG = [
         "category": "Frutas",
         "description": "Pera jugosa de pulpa suave y dulce.",
         "price": 72,
-        "image_url": "https://images.unsplash.com/photo-1631160299919-41ebbaa98b22?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Pears.jpg/600px-Pears.jpg",
     },
     {
         "name": "Lechuga Bola",
@@ -82,7 +82,7 @@ LA_VERDE_CATALOG = [
         "category": "Verduras",
         "description": "Lechuga iceberg fresca y crocante.",
         "price": 30,
-        "image_url": "https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Iceberg_lettuce_in_SB.jpg/600px-Iceberg_lettuce_in_SB.jpg",
     },
     {
         "name": "Tomate Perita",
@@ -91,7 +91,7 @@ LA_VERDE_CATALOG = [
         "category": "Verduras",
         "description": "Tomate maduro, ideal para salsas y ensaladas.",
         "price": 45,
-        "image_url": "https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Tomato_je.jpg/600px-Tomato_je.jpg",
     },
     {
         "name": "Zanahoria",
@@ -100,34 +100,34 @@ LA_VERDE_CATALOG = [
         "category": "Verduras",
         "description": "Zanahoria naranja, firme y dulce.",
         "price": 28,
-        "image_url": "https://images.unsplash.com/photo-1598170845058-32b9d6a59460?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Vegetable-Carrot-Bundle-wStalks.jpg/600px-Vegetable-Carrot-Bundle-wStalks.jpg",
     },
     {
         "name": "Cebolla Blanca",
         "stock": 48,
         "unit": "kg",
         "category": "Verduras",
-        "description": "Cebolla versátil para sofritos y guisos.",
+        "description": "Cebolla versatil para sofritos y guisos.",
         "price": 32,
-        "image_url": "https://images.unsplash.com/photo-1518977954372-55e903264d04?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Onion_on_white_background.jpg/600px-Onion_on_white_background.jpg",
     },
     {
         "name": "Papa",
         "stock": 70,
         "unit": "kg",
         "category": "Verduras",
-        "description": "Papa lavada, firme para horno o puré.",
+        "description": "Papa lavada, firme para horno o pure.",
         "price": 25,
-        "image_url": "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Patates.jpg/600px-Patates.jpg",
     },
     {
-        "name": "Morrón Rojo",
+        "name": "Morron Rojo",
         "stock": 24,
         "unit": "kg",
         "category": "Verduras",
-        "description": "Morrón carnoso, dulce y colorido.",
+        "description": "Morron carnoso, dulce y colorido.",
         "price": 58,
-        "image_url": "https://images.unsplash.com/photo-1563565375-3ceb2f3b8cc9?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Red_capsicum_and_cross_section.jpg/600px-Red_capsicum_and_cross_section.jpg",
     },
     {
         "name": "Zapallo Cabutia",
@@ -136,7 +136,7 @@ LA_VERDE_CATALOG = [
         "category": "Verduras",
         "description": "Zapallo anco dulce, ideal para horno y cremas.",
         "price": 40,
-        "image_url": "https://images.unsplash.com/photo-1628773822503-930a87bfce9a?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/FruitingPumpkin.jpg/600px-FruitingPumpkin.jpg",
     },
     {
         "name": "Pepino",
@@ -145,7 +145,7 @@ LA_VERDE_CATALOG = [
         "category": "Verduras",
         "description": "Pepino fresco para ensaladas y sandwiches.",
         "price": 36,
-        "image_url": "https://images.unsplash.com/photo-1604977042943-80790edba3c6?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Cucumbers.jpg/600px-Cucumbers.jpg",
     },
     {
         "name": "Espinaca",
@@ -154,16 +154,16 @@ LA_VERDE_CATALOG = [
         "category": "Verduras",
         "description": "Espinaca tierna en atado, lista para saltear.",
         "price": 34,
-        "image_url": "https://images.unsplash.com/photo-1576045057995-568f588fb828?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Spinach_leaves.JPG/600px-Spinach_leaves.JPG",
     },
     {
-        "name": "Brócoli",
+        "name": "Brocoli",
         "stock": 16,
         "unit": "pza",
         "category": "Verduras",
-        "description": "Brócoli verde firme, rico en fibra.",
+        "description": "Brocoli verde firme, rico en fibra.",
         "price": 48,
-        "image_url": "https://images.unsplash.com/photo-1459411552885-6730b2f92d6a?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Broccoli_and_cross_section_edit.jpg/600px-Broccoli_and_cross_section_edit.jpg",
     },
     {
         "name": "Albahaca",
@@ -172,16 +172,16 @@ LA_VERDE_CATALOG = [
         "category": "Hierbas",
         "description": "Albahaca fresca para pastas y pesto.",
         "price": 38,
-        "image_url": "https://images.unsplash.com/photo-1618375563079-7e6162f76b0f?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Basil-Basilicum_photo-1.jpg/600px-Basil-Basilicum_photo-1.jpg",
     },
     {
         "name": "Perejil",
         "stock": 20,
         "unit": "atado",
         "category": "Hierbas",
-        "description": "Manojo de perejil fresco y aromático.",
+        "description": "Manojo de perejil fresco y aromatico.",
         "price": 28,
-        "image_url": "https://images.unsplash.com/photo-1607301404339-jf8b966d7673?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Petroselinum_crispum_20101017.jpg/600px-Petroselinum_crispum_20101017.jpg",
     },
     {
         "name": "Cilantro",
@@ -190,16 +190,16 @@ LA_VERDE_CATALOG = [
         "category": "Hierbas",
         "description": "Cilantro fresco para guacamole y ceviches.",
         "price": 30,
-        "image_url": "https://images.unsplash.com/photo-1606914501446-1c4aeb8e2f5f?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Coriander_plant.jpg/600px-Coriander_plant.jpg",
     },
     {
-        "name": "Orégano Seco",
+        "name": "Oregano Seco",
         "stock": 40,
         "unit": "pza",
         "category": "Condimentos",
-        "description": "Orégano para pizzas, salsas y aderezos.",
+        "description": "Oregano para pizzas, salsas y aderezos.",
         "price": 22,
-        "image_url": "https://images.unsplash.com/photo-1615485500704-4e870f2087e6?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Origanum_vulgare_-_harilik_pune.jpg/600px-Origanum_vulgare_-_harilik_pune.jpg",
     },
     {
         "name": "Ajo",
@@ -208,16 +208,16 @@ LA_VERDE_CATALOG = [
         "category": "Condimentos",
         "description": "Cabezas de ajo seleccionadas, sabor intenso.",
         "price": 52,
-        "image_url": "https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Garlic_Thassos.jpg/600px-Garlic_Thassos.jpg",
     },
     {
         "name": "Huevo Rojo",
         "stock": 80,
         "unit": "docena",
         "category": "Pecuarios",
-        "description": "Huevo de gallina fresco del día.",
+        "description": "Huevo de gallina fresco del dia.",
         "price": 55,
-        "image_url": "https://images.unsplash.com/photo-1582722872475-44dc41fbb9d7?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Fresh_eggs.jpg/600px-Fresh_eggs.jpg",
     },
     {
         "name": "Pechuga de Pollo",
@@ -226,7 +226,7 @@ LA_VERDE_CATALOG = [
         "category": "Pecuarios",
         "description": "Pechuga sin hueso, ideal para plancha o horno.",
         "price": 249,
-        "image_url": "https://images.unsplash.com/photo-1604503468506-a8da358b8270?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Chicken_breast.jpg/600px-Chicken_breast.jpg",
     },
     {
         "name": "Queso Crema",
@@ -235,7 +235,7 @@ LA_VERDE_CATALOG = [
         "category": "Pecuarios",
         "description": "Queso crema untable, suave y cremoso.",
         "price": 68,
-        "image_url": "https://images.unsplash.com/photo-1486297678162-eb2a904ef58d?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Cheese_platter.jpg/600px-Cheese_platter.jpg",
     },
     {
         "name": "Leche Entera",
@@ -244,15 +244,17 @@ LA_VERDE_CATALOG = [
         "category": "Pecuarios",
         "description": "Leche entera pasteurizada 1 litro.",
         "price": 42,
-        "image_url": "https://images.unsplash.com/photo-1563636619-e9143daac3d0?w=600&q=80",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Milk_glass.jpg/600px-Milk_glass.jpg",
     },
 ]
 
 
 def ensure_catalog(db, Product):
-    """Inserta productos nuevos y repara image_url vacías."""
+    """Inserta productos nuevos y repara image_url con Unsplash (bloqueado en localhost)."""
     added = 0
     fixed = 0
+    catalog_by_name = {item["name"]: item for item in LA_VERDE_CATALOG}
+
     for item in LA_VERDE_CATALOG:
         row = Product.query.filter_by(name=item["name"]).first()
         if not row:
@@ -263,6 +265,7 @@ def ensure_catalog(db, Product):
         bad = (
             not img
             or "placehold" in img.lower()
+            or "unsplash" in img
             or "encrypted-tbn" in img
             or "clickabasto" in img
             or "grillhouse" in img
@@ -274,5 +277,6 @@ def ensure_catalog(db, Product):
             row.description = item["description"]
         if row.stock is None or row.stock == 0:
             row.stock = item["stock"]
+
     db.session.commit()
     return added, fixed
