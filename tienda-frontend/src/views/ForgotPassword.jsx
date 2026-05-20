@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../layout";
+import AuthLayout from "../components/AuthLayout";
+import { forgotPasswordCopy as copy } from "../copy/authStrings";
 
 const ForgotPassword = () => {
   const { store, actions } = useContext(Context);
@@ -21,75 +23,77 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 16px", background: "var(--surface)" }}>
-      <div style={{ width: "100%", maxWidth: "420px" }}>
-        <div style={{ textAlign: "center", marginBottom: "32px" }}>
-          <div style={{ fontSize: "3rem", marginBottom: "8px" }}>??</div>
-          <h2 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)", fontSize: "2rem", marginBottom: "6px" }}>
-            Recuperar contraseña
-          </h2>
-          <p style={{ color: "var(--text-muted)", fontSize: "0.95rem" }}>
-            Ingresá tu email y te enviamos un enlace para restablecer tu contraseña
+    <AuthLayout
+      icon={<i className="fas fa-lock" aria-hidden="true" />}
+      title={copy.title}
+      subtitle={copy.subtitle}
+    >
+      {store.error && (
+        <div className="ui-alert ui-alert--error">
+          <i className="fas fa-exclamation-circle"></i> {store.error}
+        </div>
+      )}
+
+      {submitted ? (
+        <div className="empty-state py-4">
+          <span className="auth-page__icon auth-page__icon--success" aria-hidden="true">
+            <i className="fas fa-envelope-open-text"></i>
+          </span>
+          <h2 className="auth-page__title">{copy.successTitle}</h2>
+          <p className="text-muted-theme">
+            {copy.successBodyBefore}
+            <strong className="text-accent">{email}</strong>
+            {copy.successBodyAfter}
           </p>
+          <Link to="/login" className="btn btn-accent btn-accent--block mt-3">
+            {copy.backToLogin}
+          </Link>
         </div>
-
-        <div className="card-dark p-4">
-          {store.error && (
-            <div style={{ background: "rgba(229,57,53,0.1)", border: "1px solid rgba(229,57,53,0.3)", borderRadius: "10px", padding: "12px 16px", marginBottom: "20px", color: "#c62828", fontSize: "0.9rem" }}>
-              <i className="fas fa-exclamation-circle me-2"></i>{store.error}
+      ) : (
+        <>
+          <form onSubmit={handleSubmit}>
+            <div className="ui-field">
+              <label className="ui-label" htmlFor="forgot-email">
+                {copy.emailLabel}
+              </label>
+              <input
+                id="forgot-email"
+                type="email"
+                className="form-control-dark"
+                placeholder="tu@email.com"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (store.error) actions.clearMessage();
+                }}
+                required
+                autoComplete="email"
+              />
             </div>
-          )}
 
-          {submitted ? (
-            <div style={{ textAlign: "center", padding: "20px 0" }}>
-              <div style={{ fontSize: "3rem", marginBottom: "12px" }}>??</div>
-              <h5 style={{ color: "var(--accent)", fontWeight: 700, marginBottom: "8px" }}>¡Email enviado!</h5>
-              <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", marginBottom: "20px" }}>
-                Revisá tu bandeja de entrada en <strong>{email}</strong> y seguí el enlace para restablecer tu contraseña.
-              </p>
-              <Link to="/login" className="btn btn-accent w-100" style={{ fontWeight: 700 }}>
-                Volver al inicio de sesión
-              </Link>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label style={{ fontWeight: 600, color: "var(--text)", fontSize: "0.9rem", marginBottom: "6px", display: "block" }}>
-                  Email de tu cuenta
-                </label>
-                <input
-                  type="email"
-                  className="form-control-dark"
-                  placeholder="tu@email.com"
-                  value={email}
-                  onChange={(e) => { setEmail(e.target.value); if (store.error) actions.clearMessage(); }}
-                  required
-                  style={{ width: "100%" }}
-                />
-              </div>
+            <button type="submit" className="btn btn-accent btn-accent--block" disabled={isSending}>
+              {isSending ? (
+                <>
+                  <span className="spinner-verde me-2" role="status" aria-hidden="true"></span>
+                  {copy.sending}
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-paper-plane me-2"></i>
+                  {copy.submit}
+                </>
+              )}
+            </button>
+          </form>
 
-              <button
-                type="submit"
-                className="btn btn-accent w-100"
-                disabled={isSending}
-                style={{ padding: "12px", fontSize: "1rem", fontWeight: 700 }}
-              >
-                <i className={isSending ? "fas fa-spinner fa-spin me-2" : "fas fa-paper-plane me-2"}></i>
-                {isSending ? "Enviando..." : "Enviar enlace de recuperación"}
-              </button>
-            </form>
-          )}
-
-          {!submitted && (
-            <div style={{ textAlign: "center", marginTop: "20px", paddingTop: "16px", borderTop: "1px solid rgba(0,0,0,0.08)", fontSize: "0.9rem", color: "var(--text-muted)" }}>
-              <Link to="/login" style={{ color: "var(--accent)", textDecoration: "none", fontWeight: 600 }}>
-                <i className="fas fa-arrow-left me-1"></i>Volver al login
-              </Link>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+          <p className="auth-page__footer-text">
+            <Link to="/login" className="ui-link">
+              <i className="fas fa-arrow-left me-1"></i> {copy.backToLogin}
+            </Link>
+          </p>
+        </>
+      )}
+    </AuthLayout>
   );
 };
 

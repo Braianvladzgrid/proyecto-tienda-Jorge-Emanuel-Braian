@@ -1,11 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../layout";
+import { isFavoriteProduct } from "../utils/favoriteMatch";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, animationDelay = 0 }) => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
-  const isFav = store.favorites.some((f) => f.product_id === product.id);
+  const [justAdded, setJustAdded] = useState(false);
+  const isFav = isFavoriteProduct(store.favorites, product.id);
 
   const handleFav = (e) => {
     e.stopPropagation();
@@ -15,63 +17,61 @@ const ProductCard = ({ product }) => {
   const handleCart = (e) => {
     e.stopPropagation();
     actions.addToCart(product, 1);
+    setJustAdded(true);
+    window.dispatchEvent(new CustomEvent("open-cart-drawer"));
+    setTimeout(() => setJustAdded(false), 900);
   };
 
+  const goDetail = () => navigate("/product/" + product.id);
+
   return (
-    <div
-      className="card-dark h-100 d-flex flex-column"
-      style={{ cursor: "pointer" }}
-      onClick={() => navigate("/product/" + product.id)}
+    <article
+      className="product-card product-card--reveal"
+      style={{ animationDelay: animationDelay + "s" }}
+      onClick={goDetail}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          goDetail();
+        }
+      }}
     >
-      <div className="position-relative overflow-hidden" style={{ backgroundColor: "#f5fbf5" }}>
+      <div className="product-card__media">
         <img
-          src={product.image_url || "https://placehold.co/400x220/e8f5e9/2e7d32?text=🥦"}
+          src={product.image_url || "https://placehold.co/400x300/e8f5e9/2e7d32?text=🥦"}
           alt={product.name}
           className="product-img"
         />
+        <span className="product-card__price-badge">${product.price}</span>
         {store.token && (
           <button
-            className={"fav-btn position-absolute top-0 end-0 m-3 " + (isFav ? "active" : "")}
+            type="button"
+            className={"fav-btn position-absolute top-0 start-0 m-3 " + (isFav ? "active" : "")}
             onClick={handleFav}
-            style={{ zIndex: 2 }}
+            aria-label={isFav ? "Quitar de favoritos" : "Agregar a favoritos"}
           >
             <i className={(isFav ? "fas" : "far") + " fa-heart"}></i>
           </button>
         )}
         {product.stock === 0 && (
-          <div className="position-absolute top-0 start-0 m-3" style={{ zIndex: 2 }}>
-            <span className="badge bg-danger px-2 py-1 fw-bold" style={{ borderRadius: "6px", fontSize: "0.7rem", textTransform: "uppercase" }}>Sin stock</span>
-          </div>
+          <span className="badge bg-danger product-card__badge-stock">Sin stock</span>
         )}
       </div>
-      <div className="p-3 d-flex flex-column flex-grow-1">
-        <div className="mb-2">
-          <span className="category-chip">{product.category || "Otros"}</span>
-        </div>
-        <h6 className="mb-2 fw-bold" style={{ fontSize: "1.05rem", color: "#19201a", letterSpacing: "-0.2px" }}>
-          {product.name}
-        </h6>
-        <p className="mb-3" style={{ fontSize: "0.85rem", color: "#627765", lineHeight: "1.5", flexGrow: 1, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
-          {product.description}
-        </p>
-        <div className="d-flex align-items-center justify-content-between pt-2 mt-auto" style={{ borderTop: "1px solid rgba(30,90,38,0.04)" }}>
-          <div className="d-flex align-items-baseline gap-1">
-            <span className="price-tag"></span>
-            <span style={{ fontSize: "0.75rem", color: "#627765", fontWeight: "600" }}>
-              / {product.unit || "kg"}
-            </span>
-          </div>
-          <button
-            className="btn btn-accent btn-sm d-flex align-items-center gap-1 py-2 px-3"
-            style={{ borderRadius: "10px", fontSize: "0.82rem" }}
-            onClick={handleCart}
-            disabled={product.stock === 0}
-          >
-            <i className="fas fa-plus" style={{ fontSize: "0.75rem" }}></i> Agregar
-          </button>
-        </div>
+      <div className="product-card__body">
+        <h3 className="product-card__title">{product.name}</h3>
+        <p className="product-card__desc">{product.description}</p>
+        <button
+          type="button"
+          className={"btn btn-accent product-card__cta " + (justAdded ? "product-card__cta--added" : "")}
+          onClick={handleCart}
+          disabled={product.stock === 0}
+        >
+          <i className="fas fa-shopping-cart"></i> Agregar al carrito
+        </button>
       </div>
-    </div>
+    </article>
   );
 };
 

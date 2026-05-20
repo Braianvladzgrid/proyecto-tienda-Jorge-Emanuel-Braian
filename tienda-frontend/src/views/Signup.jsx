@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../layout";
+import AuthLayout from "../components/AuthLayout";
 
 const Signup = () => {
   const { store, actions } = useContext(Context);
@@ -9,9 +10,7 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [fieldError, setFieldError] = useState("");
 
-  useEffect(() => {
-    actions.clearMessage();
-  }, []);
+  useEffect(() => { actions.clearMessage(); }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -36,136 +35,64 @@ const Signup = () => {
   };
 
   return (
-    <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 16px", background: "var(--surface)" }}>
-      <div style={{ width: "100%", maxWidth: "480px" }}>
-        <div style={{ textAlign: "center", marginBottom: "32px" }}>
-          <div style={{ fontSize: "3rem", marginBottom: "8px" }}>🌱</div>
-          <h2 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)", fontSize: "2rem", marginBottom: "6px" }}>
-            Crear cuenta gratis
-          </h2>
-          <p style={{ color: "var(--text-muted)", fontSize: "0.95rem" }}>
-            Sumate a La Verde y empezá a comprar fresco
-          </p>
+    <AuthLayout
+      icon="🌱"
+      title="Crear cuenta gratis"
+      subtitle="Sumate a La Verde y empezá a comprar fresco"
+      wide
+    >
+      {(store.error || fieldError) && (
+        <div className="ui-alert ui-alert--error">
+          <i className="fas fa-exclamation-circle"></i> {fieldError || store.error}
         </div>
+      )}
 
-        <div className="card-dark p-4">
-          {(store.error || fieldError) && (
-            <div style={{ background: "rgba(229,57,53,0.1)", border: "1px solid rgba(229,57,53,0.3)", borderRadius: "10px", padding: "12px 16px", marginBottom: "20px", color: "#c62828", fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "8px" }}>
-              <i className="fas fa-exclamation-circle"></i> {fieldError || store.error}
-            </div>
-          )}
+      {store.message && (
+        <div className="ui-alert ui-alert--success">
+          <i className="fas fa-check-circle"></i> {store.message}
+        </div>
+      )}
 
-          {store.message && (
-            <div style={{ background: "rgba(46,125,50,0.1)", border: "1px solid rgba(46,125,50,0.3)", borderRadius: "10px", padding: "12px 16px", marginBottom: "20px", color: "var(--accent)", fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "8px" }}>
-              <i className="fas fa-check-circle"></i> {store.message}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit}>
-            <div className="row g-3 mb-3">
-              <div className="col-6">
-                <label style={{ fontWeight: 600, color: "var(--text)", fontSize: "0.9rem", marginBottom: "6px", display: "block" }}>
-                  Nombre
-                </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  className="form-control-dark"
-                  placeholder="Juan"
-                  value={form.firstName}
-                  onChange={handleChange}
-                  required
-                  style={{ width: "100%" }}
-                />
-              </div>
-              <div className="col-6">
-                <label style={{ fontWeight: 600, color: "var(--text)", fontSize: "0.9rem", marginBottom: "6px", display: "block" }}>
-                  Apellido
-                </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  className="form-control-dark"
-                  placeholder="García"
-                  value={form.lastName}
-                  onChange={handleChange}
-                  required
-                  style={{ width: "100%" }}
-                />
-              </div>
-            </div>
-
-            <div className="mb-3">
-              <label style={{ fontWeight: 600, color: "var(--text)", fontSize: "0.9rem", marginBottom: "6px", display: "block" }}>
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                className="form-control-dark"
-                placeholder="tu@email.com"
-                value={form.email}
-                onChange={handleChange}
-                required
-                style={{ width: "100%" }}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label style={{ fontWeight: 600, color: "var(--text)", fontSize: "0.9rem", marginBottom: "6px", display: "block" }}>
-                Contraseña
-              </label>
-              <input
-                type="password"
-                name="password"
-                className="form-control-dark"
-                placeholder="Mínimo 4 caracteres"
-                value={form.password}
-                onChange={handleChange}
-                required
-                style={{ width: "100%" }}
-              />
-            </div>
-
-            <div className="mb-4">
-              <label style={{ fontWeight: 600, color: "var(--text)", fontSize: "0.9rem", marginBottom: "6px", display: "block" }}>
-                Confirmar contraseña
-              </label>
-              <input
-                type="password"
-                name="confirm"
-                className="form-control-dark"
-                placeholder="Repetí tu contraseña"
-                value={form.confirm}
-                onChange={handleChange}
-                required
-                style={{ width: "100%" }}
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="btn btn-accent w-100"
-              disabled={loading}
-              style={{ padding: "12px", fontSize: "1rem", fontWeight: 700 }}
-            >
-              {loading ? (
-                <span><i className="fas fa-spinner fa-spin me-2"></i>Creando cuenta...</span>
-              ) : (
-                <span><i className="fas fa-user-plus me-2"></i>Crear cuenta</span>
-              )}
-            </button>
-          </form>
-
-          <div style={{ textAlign: "center", marginTop: "24px", paddingTop: "20px", borderTop: "1px solid rgba(0,0,0,0.08)", fontSize: "0.9rem", color: "var(--text-muted)" }}>
-            ¿Ya tenés cuenta?{" "}
-            <Link to="/login" style={{ color: "var(--accent)", fontWeight: 700, textDecoration: "none" }}>
-              Iniciá sesión
-            </Link>
+      <form onSubmit={handleSubmit}>
+        <div className="row g-3 mb-0">
+          <div className="col-6 ui-field">
+            <label className="ui-label" htmlFor="signup-first">Nombre</label>
+            <input id="signup-first" type="text" name="firstName" className="form-control-dark" placeholder="Juan" value={form.firstName} onChange={handleChange} required />
+          </div>
+          <div className="col-6 ui-field">
+            <label className="ui-label" htmlFor="signup-last">Apellido</label>
+            <input id="signup-last" type="text" name="lastName" className="form-control-dark" placeholder="García" value={form.lastName} onChange={handleChange} required />
           </div>
         </div>
-      </div>
-    </div>
+
+        <div className="ui-field">
+          <label className="ui-label" htmlFor="signup-email">Email</label>
+          <input id="signup-email" type="email" name="email" className="form-control-dark" placeholder="tu@email.com" value={form.email} onChange={handleChange} required />
+        </div>
+
+        <div className="ui-field">
+          <label className="ui-label" htmlFor="signup-pass">Contraseña</label>
+          <input id="signup-pass" type="password" name="password" className="form-control-dark" placeholder="Mínimo 4 caracteres" value={form.password} onChange={handleChange} required />
+        </div>
+
+        <div className="ui-field">
+          <label className="ui-label" htmlFor="signup-confirm">Confirmar contraseña</label>
+          <input id="signup-confirm" type="password" name="confirm" className="form-control-dark" placeholder="Repetí tu contraseña" value={form.confirm} onChange={handleChange} required />
+        </div>
+
+        <button type="submit" className="btn btn-accent btn-accent--block" disabled={loading}>
+          {loading ? (
+            <><span className="spinner-verde me-2"></span> Creando cuenta...</>
+          ) : (
+            <><i className="fas fa-user-plus me-2"></i> Crear cuenta</>
+          )}
+        </button>
+      </form>
+
+      <p className="auth-page__footer-text">
+        ¿Ya tenés cuenta? <Link to="/login" className="ui-link">Iniciá sesión</Link>
+      </p>
+    </AuthLayout>
   );
 };
 

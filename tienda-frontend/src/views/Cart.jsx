@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../layout";
+import PageHeader from "../components/PageHeader";
 
 const SHIPPING_THRESHOLD = 5000;
 const SHIPPING_COST = 350;
@@ -33,182 +34,148 @@ const Cart = () => {
 
   if (ordered) {
     return (
-      <div style={{ minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "16px", padding: "40px" }}>
-        <div style={{ fontSize: "5rem" }}>🎉</div>
-        <h2 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)", fontSize: "2.2rem" }}>
-          ¡Pedido confirmado!
-        </h2>
-        <p style={{ color: "var(--text-muted)", fontSize: "1rem" }}>
-          Tu pedido fue recibido. Te avisamos cuando esté en camino 🚚
-        </p>
-        <div style={{ width: "40px", height: "4px", background: "var(--accent)", borderRadius: "2px", animation: "grow 3s linear forwards" }}></div>
+      <div className="success-screen">
+        <span className="success-screen__icon">🎉</span>
+        <h2 className="page-header__title">¡Pedido confirmado!</h2>
+        <p className="text-muted-theme">Tu pedido fue recibido. Te avisamos cuando esté en camino 🚚</p>
+        <div className="success-screen__bar"></div>
       </div>
     );
   }
 
   if (store.cart.length === 0) {
     return (
-      <div style={{ minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "16px", padding: "40px" }}>
-        <div style={{ fontSize: "5rem" }}>🧺</div>
-        <h3 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)" }}>Tu carrito está vacío</h3>
-        <p style={{ color: "var(--text-muted)" }}>Agregá productos frescos desde nuestra tienda</p>
-        <Link to="/" className="btn btn-accent" style={{ marginTop: "8px" }}>
-          Ver productos
-        </Link>
+      <div className="success-screen">
+        <span className="success-screen__icon">🧺</span>
+        <h3 className="page-header__title">Tu carrito está vacío</h3>
+        <p className="text-muted-theme">Agregá productos frescos desde nuestra tienda</p>
+        <Link to="/" className="btn btn-accent mt-2">Ver productos</Link>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: "40px 0", background: "var(--surface)", minHeight: "80vh" }}>
+    <div className="page checkout-page">
       <div className="container">
-        <h2 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)", fontSize: "2.2rem", marginBottom: "8px" }}>
-          🧺 Tu carrito
-        </h2>
-        <p style={{ color: "var(--text-muted)", marginBottom: "32px" }}>
-          {store.cart.length} {store.cart.length === 1 ? "producto" : "productos"} en tu carrito
-        </p>
+        <PageHeader
+          title="🧺 Tu carrito"
+          subtitle={store.cart.length + " " + (store.cart.length === 1 ? "producto" : "productos") + " · Checkout"}
+        />
 
-        <div className="row g-4 align-items-start">
-          <div className="col-lg-8">
-            <div className="card-dark p-0" style={{ overflow: "hidden" }}>
-              <div style={{ padding: "16px 20px", background: "var(--surface-2)", borderBottom: "1px solid rgba(46,125,50,0.1)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontWeight: 700, color: "var(--text)" }}>Productos</span>
-                <button
-                  onClick={() => actions.clearCart()}
-                  style={{ background: "none", border: "none", color: "var(--text-muted)", fontSize: "0.85rem", cursor: "pointer" }}
-                >
-                  <i className="fas fa-trash me-1"></i>Vaciar carrito
+        <div className="checkout-layout">
+          <div>
+            <section className="checkout-panel mb-4">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h2 className="h6 fw-bold mb-0">Productos</h2>
+                <button type="button" className="btn btn-sm btn-outline-accent" onClick={() => actions.clearCart()}>
+                  <i className="fas fa-trash me-1"></i> Vaciar
                 </button>
               </div>
 
               {store.cart.map((item, idx) => (
-                <div
-                  key={item.id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "16px",
-                    padding: "16px 20px",
-                    borderBottom: idx < store.cart.length - 1 ? "1px solid rgba(0,0,0,0.06)" : "none",
-                    flexWrap: "wrap",
-                  }}
-                >
+                <div key={item.id} className={"d-flex align-items-center gap-3 py-3 " + (idx < store.cart.length - 1 ? "border-bottom-cart" : "")}>
                   <img
-                    src={item.image_url || "https://placehold.co/72x72/e8f5e9/2e7d32?text=🥬"}
+                    src={item.image_url || "https://placehold.co/72x72/e8f5e9/2e7d32?text=🥦"}
                     alt={item.name}
-                    style={{ width: "72px", height: "72px", objectFit: "cover", borderRadius: "12px", flexShrink: 0 }}
+                    className="checkout-summary__thumb"
                   />
-
-                  <div style={{ flex: 1, minWidth: "140px" }}>
-                    <div style={{ fontWeight: 700, color: "var(--text)", fontSize: "1rem" }}>{item.name}</div>
-                    <div style={{ color: "var(--text-muted)", fontSize: "0.83rem", marginTop: "2px" }}>
-                      {item.category} • ${parseFloat(item.price).toFixed(2)} / {item.unit}
-                    </div>
+                  <div className="flex-grow-1">
+                    <div className="fw-bold">{item.name}</div>
+                    <div className="text-muted-theme small">{item.category} · ${parseFloat(item.price).toFixed(2)} / {item.unit}</div>
                   </div>
-
-                  <div style={{ display: "flex", alignItems: "center", border: "2px solid rgba(46,125,50,0.2)", borderRadius: "10px", overflow: "hidden" }}>
-                    <button
-                      onClick={() => actions.updateCartQuantity(item.id, item.quantity - 1)}
-                      style={{ width: "36px", height: "36px", border: "none", background: "var(--surface-2)", color: "var(--accent)", fontWeight: 700, cursor: "pointer" }}
-                    >
-                      -
-                    </button>
-                    <span style={{ width: "40px", textAlign: "center", fontWeight: 700, color: "var(--text)" }}>
-                      {item.quantity}
-                    </span>
-                    <button
-                      onClick={() => actions.updateCartQuantity(item.id, item.quantity + 1)}
-                      style={{ width: "36px", height: "36px", border: "none", background: "var(--surface-2)", color: "var(--accent)", fontWeight: 700, cursor: "pointer" }}
-                    >
-                      +
-                    </button>
+                  <div className="qty-control">
+                    <button type="button" className="qty-control__btn" onClick={() => actions.updateCartQuantity(item.id, item.quantity - 1)}>−</button>
+                    <span className="qty-control__value">{item.quantity}</span>
+                    <button type="button" className="qty-control__btn" onClick={() => actions.updateCartQuantity(item.id, item.quantity + 1)}>+</button>
                   </div>
-
-                  <div style={{ fontWeight: 800, color: "var(--accent)", fontSize: "1.05rem", minWidth: "80px", textAlign: "right" }}>
-                    ${(item.price * item.quantity).toFixed(2)}
+                  <div className="fw-bold text-accent text-end cart-line-price">
+                    ${(item.price * item.quantity).toFixed(0)}
                   </div>
-
-                  <button
-                    onClick={() => actions.removeFromCart(item.id)}
-                    style={{ background: "rgba(229,57,53,0.1)", border: "none", color: "#e53935", borderRadius: "8px", width: "36px", height: "36px", cursor: "pointer", flexShrink: 0 }}
-                  >
+                  <button type="button" className="cart-drawer__remove" onClick={() => actions.removeFromCart(item.id)}>
                     <i className="fas fa-trash-alt"></i>
                   </button>
                 </div>
               ))}
-            </div>
 
-            <div style={{ marginTop: "16px" }}>
-              <Link to="/" style={{ color: "var(--accent)", textDecoration: "none", fontSize: "0.9rem", fontWeight: 600 }}>
-                <i className="fas fa-arrow-left me-2"></i>Seguir comprando
+              <Link to="/" className="ui-link small">
+                <i className="fas fa-arrow-left me-1"></i> Seguir comprando
               </Link>
-            </div>
-          </div>
+            </section>
 
-          <div className="col-lg-4">
-            <div className="card-dark p-4">
-              <h5 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)", fontSize: "1.3rem", marginBottom: "20px" }}>
-                Resumen del pedido
-              </h5>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "20px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.9rem", color: "var(--text-muted)" }}>
-                  <span>Subtotal</span>
-                  <span style={{ color: "var(--text)", fontWeight: 600 }}>${subtotal.toFixed(2)}</span>
+            <section className="checkout-panel">
+              <h2 className="h6 fw-bold mb-3">Envío</h2>
+              {isProcessing ? (
+                <div className="checkout-loading-box">
+                  <div className="spinner-verde spinner-verde--lg" role="status"></div>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.9rem", color: "var(--text-muted)" }}>
-                  <span>Envío</span>
-                  <span style={{ color: shipping === 0 ? "var(--accent)" : "var(--text)", fontWeight: 600 }}>
-                    {shipping === 0 ? "¡GRATIS! 🚚" : "$" + shipping.toFixed(2)}
-                  </span>
-                </div>
-                {shipping > 0 && (
-                  <div style={{ padding: "8px 12px", background: "rgba(46,125,50,0.08)", borderRadius: "8px", fontSize: "0.8rem", color: "var(--accent)" }}>
-                    💡 Sumá ${(SHIPPING_THRESHOLD - subtotal).toFixed(2)} más para envío gratis
-                  </div>
-                )}
-              </div>
-
-              <div style={{ borderTop: "2px solid rgba(46,125,50,0.15)", paddingTop: "16px", marginBottom: "20px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontWeight: 700, fontSize: "1.1rem", color: "var(--text)" }}>Total</span>
-                  <span style={{ fontWeight: 800, fontSize: "1.5rem", color: "var(--accent)" }}>${total.toFixed(2)}</span>
-                </div>
-              </div>
-
-              {store.token ? (
-                <button
-                  className="btn btn-accent w-100"
-                  onClick={handleOrder}
-                  disabled={isProcessing}
-                  style={{ padding: "14px", fontSize: "1rem", fontWeight: 700 }}
-                >
-                  <i className={isProcessing ? "fas fa-spinner fa-spin me-2" : "fas fa-check-circle me-2"}></i>
-                  {isProcessing ? "Procesando..." : "Finalizar compra"}
-                </button>
               ) : (
-                <div>
-                  <Link
-                    to="/login"
-                    className="btn btn-accent w-100 mb-2"
-                    style={{ padding: "14px", fontSize: "1rem", fontWeight: 700 }}
-                  >
-                    <i className="fas fa-sign-in-alt me-2"></i>Iniciar sesión para comprar
-                  </Link>
-                  <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", textAlign: "center", marginBottom: 0 }}>
-                    ¿No tenés cuenta? <Link to="/signup" style={{ color: "var(--accent)" }}>Registrate gratis</Link>
-                  </p>
-                </div>
+                <p className="text-muted-theme small mb-0">
+                  {shipping === 0 ? "🚚 Envío gratis aplicado a tu pedido" : "El envío se calcula según tu zona al finalizar."}
+                </p>
               )}
-
-              <div style={{ marginTop: "20px", display: "flex", justifyContent: "center", gap: "12px" }}>
-                {["🔒 Pago seguro", "🌿 Fresco garantizado"].map((t) => (
-                  <span key={t} style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{t}</span>
-                ))}
-              </div>
-            </div>
+            </section>
           </div>
+
+          <aside className="checkout-summary">
+            <h2 className="h6 fw-bold mb-3">Resumen del pedido</h2>
+
+            {store.cart.slice(0, 4).map((item) => (
+              <div key={item.id} className="checkout-summary__item">
+                <div className="checkout-summary__thumb-wrap">
+                  <img src={item.image_url || "https://placehold.co/64x64/e8f5e9/2e7d32?text=🥦"} alt={item.name} className="checkout-summary__thumb" />
+                  <span className="checkout-summary__qty-badge">{item.quantity}</span>
+                </div>
+                <span className="flex-grow-1 small fw-semibold">{item.name}</span>
+                <span className="fw-bold text-accent">${(item.price * item.quantity).toFixed(0)}</span>
+              </div>
+            ))}
+
+            <div className="d-flex justify-content-between small text-muted-theme mb-2">
+              <span>Subtotal</span>
+              <span className="fw-semibold text-accent">${subtotal.toFixed(2)}</span>
+            </div>
+            <div className="d-flex justify-content-between small text-muted-theme mb-3">
+              <span>Envío</span>
+              <span className="fw-semibold">{shipping === 0 ? "Gratis 🚚" : "$" + shipping.toFixed(2)}</span>
+            </div>
+
+            {shipping > 0 && (
+              <p className="small p-2 rounded mb-3 shipping-hint-free">
+                Sumá ${(SHIPPING_THRESHOLD - subtotal).toFixed(0)} más para envío gratis
+              </p>
+            )}
+
+            <hr className="ui-divider" />
+
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <span className="fw-bold">Total</span>
+              <span className="price-tag mb-0">${total.toFixed(2)}</span>
+            </div>
+
+            {store.token ? (
+              <button type="button" className="btn btn-accent btn-accent--block py-3" onClick={handleOrder} disabled={isProcessing}>
+                {isProcessing ? (
+                  <><span className="spinner-verde me-2"></span> Procesando...</>
+                ) : (
+                  <><i className="fas fa-check-circle me-2"></i> Finalizar compra</>
+                )}
+              </button>
+            ) : (
+              <>
+                <Link to="/login" className="btn btn-accent btn-accent--block py-3 mb-2">
+                  Iniciar sesión para comprar
+                </Link>
+                <p className="small text-muted-theme text-center mb-0">
+                  ¿No tenés cuenta? <Link to="/signup" className="ui-link">Registrate</Link>
+                </p>
+              </>
+            )}
+
+            <div className="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+              <span className="small text-muted-theme">🔒 Pago seguro</span>
+              <span className="small text-muted-theme">🌿 Fresco garantizado</span>
+            </div>
+          </aside>
         </div>
       </div>
     </div>

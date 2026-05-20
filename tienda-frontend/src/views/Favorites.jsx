@@ -1,42 +1,40 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../layout";
 import ProductCard from "../components/ProductCard";
+import PageHeader from "../components/PageHeader";
+import { isFavoriteProduct } from "../utils/favoriteMatch";
 
 const Favorites = () => {
-  const { store } = useContext(Context);
+  const { store, actions } = useContext(Context);
 
-  const favProducts = store.products.filter((p) =>
-    store.favorites.some((f) => f.product_id === p.id)
+  useEffect(() => {
+    actions.getProducts();
+  }, []);
+
+  const favProducts = (store.products || []).filter((p) =>
+    isFavoriteProduct(store.favorites, p.id)
   );
 
   return (
-    <div style={{ padding: "40px 0", background: "var(--surface)", minHeight: "80vh" }}>
+    <div className="page">
       <div className="container">
-        <h2 style={{ fontFamily: "'Fredoka One', cursive", color: "var(--accent)", fontSize: "2.2rem", marginBottom: "8px" }}>
-          ❤️ Mis favoritos
-        </h2>
-        <p style={{ color: "var(--text-muted)", marginBottom: "32px" }}>
-          {favProducts.length} {favProducts.length === 1 ? "producto guardado" : "productos guardados"}
-        </p>
+        <PageHeader
+          title="❤️ Mis favoritos"
+          subtitle={favProducts.length + " " + (favProducts.length === 1 ? "producto guardado" : "productos guardados")}
+        />
 
         {favProducts.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "60px 20px" }}>
-            <div style={{ fontSize: "5rem", marginBottom: "16px" }}>🤍</div>
-            <h4 style={{ color: "var(--text)", marginBottom: "8px" }}>Aún no guardaste favoritos</h4>
-            <p style={{ color: "var(--text-muted)", marginBottom: "24px" }}>
-              Presioná el ❤️ en cualquier producto para guardarlo acá
-            </p>
-            <Link to="/" className="btn btn-accent">
-              Explorar productos
-            </Link>
+          <div className="empty-state ui-panel">
+            <span className="success-screen__icon">🤍</span>
+            <h3 className="page-header__title">Aún no guardaste favoritos</h3>
+            <p className="text-muted-theme">Presioná el ❤️ en cualquier producto para guardarlo acá</p>
+            <Link to="/" className="btn btn-accent mt-2">Explorar productos</Link>
           </div>
         ) : (
-          <div className="row g-4">
-            {favProducts.map((p) => (
-              <div key={p.id} className="col-sm-6 col-lg-4 col-xl-3">
-                <ProductCard product={p} />
-              </div>
+          <div className="product-grid">
+            {favProducts.map((p, i) => (
+              <ProductCard key={p.id} product={p} animationDelay={0.05 + i * 0.06} />
             ))}
           </div>
         )}

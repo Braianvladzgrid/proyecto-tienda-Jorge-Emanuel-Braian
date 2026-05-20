@@ -1,153 +1,150 @@
-﻿import React, { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Context } from "../layout";
+﻿import React, { useContext, useState, useEffect } from "react";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";import { Context } from "../layout";
+import CartDrawer from "./CartDrawer";
 
 const Navbar = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [cartOpen, setCartOpen] = useState(false);
   const cartCount = store.cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
-  const cartTotal = store.cart.reduce((acc, item) => acc + item.price * (item.quantity || 1), 0);
+  const favCount = store.favorites.length;
   const handleLogout = () => { actions.logout(); navigate("/"); };
 
+  useEffect(() => {
+    const openCart = () => setCartOpen(true);
+    window.addEventListener("open-cart-drawer", openCart);
+    return () => window.removeEventListener("open-cart-drawer", openCart);
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => document.body.classList.toggle("is-scrolled", window.scrollY > 16);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const q = e.target.elements.search?.value?.trim() || "";
+    const params = q ? "?q=" + encodeURIComponent(q) : "";
+    if (location.pathname !== "/") navigate("/" + params);
+    else navigate({ pathname: "/", search: params });
+    setTimeout(() => document.getElementById("productos")?.scrollIntoView({ behavior: "smooth" }), 150);
+  };
+
+  const navClass = ({ isActive }) => "nav-link nav-link-custom" + (isActive ? " is-active" : "");
+
   return (
-    <nav className="navbar navbar-expand-lg nav-dark sticky-top">
-      <div className="container">
-        <Link className="navbar-brand fw-bold d-flex align-items-center gap-2" to="/" style={{ fontFamily: "'Fredoka One', cursive", fontSize: "1.7rem", color: "#1e5a26" }}>
-          <span>🥦</span> La Verde
-        </Link>
-        <button className="navbar-toggler border-0 p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" style={{ color: "#1e5a26" }}>
-          <i className="fas fa-bars" style={{ fontSize: "1.2rem" }}></i>
-        </button>
+    <>
+      <nav className={"navbar navbar-expand-lg navbar-verde sticky-top " + (cartOpen ? "navbar-verde--dimmed" : "")}>
+        <div className="container-fluid px-3 px-lg-4">
+          <Link className="navbar-verde__brand-wrap" to="/">
+            <span className="navbar-verde__logo-icon" aria-hidden="true">🥦</span>
+            <span className="navbar-brand">La Verde</span>
+          </Link>
 
-        <div className="collapse navbar-collapse" id="navMenu">
-          <ul className="navbar-nav mx-auto gap-2">
-            <li className="nav-item">
-              <Link className="nav-link nav-link-custom" to="/">Inicio</Link>
-            </li>
-            {store.token && (
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link nav-link-custom" to="/favorites">Favoritos</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link nav-link-custom" to="/profile">Mi cuenta</Link>
-                </li>
-              </>
-            )}
-          </ul>
+          <form className="navbar-verde__search-wrap" onSubmit={handleSearchSubmit} role="search">
+            <div className="search-field">
+              <span className="search-field__icon">
+                <i className="fas fa-search"></i>
+              </span>
+              <input
+                type="search"
+                name="search"
+                className="form-control-dark"
+                placeholder="Buscar productos..."
+                defaultValue={new URLSearchParams(location.search).get("q") || ""}
+                aria-label="Buscar productos"
+              />
+            </div>
+          </form>
 
-          <div className="d-flex align-items-center gap-3">
-            {store.token ? (
-              <>
-                <span style={{ fontSize: "0.95rem", fontWeight: "700", color: "#627765" }}>
-                  Hola, <span style={{ color: "#1e5a26", fontFamily: "'Fredoka One', cursive" }}>{store.user?.firstName}</span>
-                </span>
+          <button
+            className="navbar-toggler navbar-verde__toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navMenu"
+            aria-label="Abrir menú"
+          >
+            <i className="fas fa-bars"></i>
+          </button>
 
-                <div className="dropdown">
-                  <button
-                    className="btn position-relative p-2 d-flex align-items-center justify-content-center"
-                    style={{ color: "#1e5a26", backgroundColor: "#edf5ed", border: "none", width: "40px", height: "40px", borderRadius: "50%" }}
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <i className="fas fa-shopping-basket" style={{ fontSize: "1.1rem" }}></i>
-                    {cartCount > 0 && (
-                      <span
-                        className="position-absolute top-0 start-100 translate-middle badge rounded-pill d-flex align-items-center justify-content-center shadow-sm"
-                        style={{ backgroundColor: "#1e5a26", fontSize: "0.68rem", width: "20px", height: "20px", fontWeight: "800", padding: 0 }}
-                      >
-                        {cartCount}
-                      </span>
-                    )}
+          <div className="collapse navbar-collapse" id="navMenu">
+            <div className="navbar-verde__nav-links ms-lg-auto me-lg-3">
+              <NavLink to="/" className={navClass} end>Inicio</NavLink>
+              <a
+                href="/#productos"
+                className="nav-link nav-link-custom"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (location.pathname !== "/") navigate("/#productos");
+                  else document.getElementById("productos")?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                Productos
+              </a>
+              {store.token && (
+                <>
+                  <NavLink to="/favorites" className={navClass}>Favoritos</NavLink>
+                  <NavLink to="/profile" className={navClass}>Mi cuenta</NavLink>
+                </>
+              )}
+            </div>
+
+            <div className="d-flex align-items-center navbar-verde__actions">
+              {store.token && (
+                <Link
+                  to="/favorites"
+                  className="navbar-verde__fav-trigger"
+                  aria-label={"Favoritos" + (favCount ? ` (${favCount})` : "")}
+                  title="Mis favoritos"
+                >
+                  <i className="fas fa-heart"></i>
+                  {favCount > 0 && (
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill navbar-verde__fav-badge cart-badge-pop">
+                      {favCount}
+                    </span>
+                  )}
+                </Link>
+              )}
+
+              <button
+                type="button"
+                className="navbar-verde__cart-trigger"
+                onClick={() => setCartOpen(true)}
+                aria-label="Abrir carrito"
+                aria-expanded={cartOpen}
+              >
+                <i className="fas fa-shopping-cart"></i>
+                {cartCount > 0 && (
+                  <span key={cartCount} className="position-absolute top-0 start-100 translate-middle badge rounded-pill navbar-verde__cart-badge cart-badge-pop">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+
+              {store.token ? (
+                <>
+                  <span className="navbar-verde__greeting">
+                    Hola, <span className="navbar-verde__greeting-name">{store.user?.firstName}</span>
+                  </span>
+                  <button type="button" className="btn btn-outline-accent btn-sm" onClick={handleLogout}>
+                    Salir
                   </button>
-
-                  <div
-                    className="dropdown-menu dropdown-menu-end p-0 shadow-lg border-0"
-                    style={{ minWidth: "340px", borderRadius: "20px", overflow: "hidden", backgroundColor: "#ffffff" }}
-                  >
-                    <div className="d-flex align-items-center justify-content-between" style={{ backgroundColor: "#1e5a26", padding: "16px 20px" }}>
-                      <span style={{ color: "#ffffff", fontWeight: 700, fontFamily: "'Fredoka One', cursive", fontSize: "1.05rem" }}>
-                        Canasta ({cartCount})
-                      </span>
-                    </div>
-
-                    {store.cart.length === 0 ? (
-                      <div className="text-center py-4 px-3">
-                        <div style={{ fontSize: "2rem" }}>🧺</div>
-                        <p style={{ color: "#627765", fontSize: "0.85rem", marginTop: "8px", marginBottom: 0, fontWeight: "600" }}>
-                          Tu canasta está vacía
-                        </p>
-                      </div>
-                    ) : (
-                      <>
-                        <div style={{ maxHeight: "260px", overflowY: "auto" }} className="py-1">
-                          {store.cart.map((item) => (
-                            <div
-                              key={item.id}
-                              className="d-flex align-items-center gap-3 px-3 py-2"
-                              style={{ borderBottom: "1px solid rgba(30,90,38,0.05)" }}
-                            >
-                              <img
-                                src={item.image_url || "https://placehold.co/48x48/e8f5e9/2e7d32?text=🥦"}
-                                alt={item.name}
-                                style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "10px", flexShrink: 0 }}
-                              />
-                              <div className="flex-grow-1 overflow-hidden">
-                                <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#19201a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                  {item.name}
-                                </div>
-                                <div style={{ fontSize: "0.8rem", color: "#627765", fontWeight: "600" }}>
-                                  {item.quantity} x 
-                                </div>
-                              </div>
-                              <div style={{ fontSize: "0.85rem", fontWeight: 800, color: "#1e5a26", flexShrink: 0 }}>
-                                
-                              </div>
-                              <button
-                                className="btn btn-sm p-1 d-flex align-items-center justify-content-center"
-                                style={{ color: "rgba(0,0,0,0.25)", backgroundColor: "transparent", border: "none" }}
-                                onClick={(e) => { e.stopPropagation(); actions.removeFromCart(item.id); }}
-                              >
-                                <i className="fas fa-times"></i>
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div style={{ padding: "16px 20px", backgroundColor: "#f5fbf5", borderTop: "1px solid rgba(30,90,38,0.05)" }}>
-                          <div className="d-flex justify-content-between align-items-center mb-3">
-                            <span style={{ fontWeight: 700, color: "#627765", fontSize: "0.85rem" }}>TOTAL</span>
-                            <span style={{ fontWeight: 800, fontSize: "1.2rem", color: "#1e5a26" }}>
-                              
-                            </span>
-                          </div>
-                          <Link
-                            to="/cart"
-                            className="btn btn-accent w-100 py-2"
-                            style={{ borderRadius: "12px", fontSize: "0.9rem" }}
-                          >
-                            Ver mi pedido →
-                          </Link>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                <button className="btn btn-outline-accent btn-sm py-2 px-3" onClick={handleLogout}>
-                  Salir
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" className="btn btn-outline-accent btn-sm py-2 px-3">Ingresar</Link>
-                <Link to="/signup" className="btn btn-accent btn-sm py-2 px-3">Registrarse</Link>
-              </>
-            )}
+                </>
+              ) : (
+                <>
+                  <Link to="/login" className="btn btn-outline-accent btn-sm">Ingresar</Link>
+                  <Link to="/signup" className="btn btn-accent btn-sm">Registrarse</Link>
+                </>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+      <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+    </>
   );
 };
 
