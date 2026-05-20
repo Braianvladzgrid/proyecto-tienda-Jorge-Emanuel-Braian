@@ -40,9 +40,10 @@ const ProductCard = ({ product, animationDelay = 0 }) => {
     >
       <div className="product-card__media">
         <img
-          src={product.image_url || "https://placehold.co/400x300/e8f5e9/2e7d32?text=🥦"}
+          src={product.image_url?.trim() || "https://placehold.co/400x300/0f2913/4ade80?text=🥦"}
           alt={product.name}
           className="product-img"
+          onError={(e) => { e.target.src = "https://placehold.co/400x300/0f2913/4ade80?text=🥦"; }}
         />
         <span className="product-card__price-badge">${product.price}</span>
         {store.token && (

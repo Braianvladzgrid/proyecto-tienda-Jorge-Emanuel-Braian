@@ -1,8 +1,4 @@
-import {
-  apiFetch,
-  mapCartFromApi,
-  mapFavoritesFromApi,
-} from "./api/client";
+import { apiFetch, mapCartFromApi, mapFavoritesFromApi } from "./api/client";
 import { CATALOG_FALLBACK } from "./data/catalogFallback";
 
 const prodSample = CATALOG_FALLBACK;
@@ -22,9 +18,7 @@ const saveGuestCart = (cart) => {
 
 const getState = ({ getStore, getActions, setStore }) => ({
   store: {
-    products: JSON.parse(
-      localStorage.getItem(PRODUCTS_CACHE_KEY) || JSON.stringify(prodSample),
-    ),
+    products: prodSample,
     product: {},
     cart: readGuestCart(),
     favorites: [],
@@ -173,11 +167,7 @@ const getState = ({ getStore, getActions, setStore }) => ({
         localStorage.removeItem("laverde_products");
         setStore({ products: data });
       } catch {
-        const saved = JSON.parse(
-          localStorage.getItem(PRODUCTS_CACHE_KEY) ||
-            JSON.stringify(prodSample),
-        );
-        setStore({ products: saved });
+        setStore({ products: prodSample });
       }
     },
 
