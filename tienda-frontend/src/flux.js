@@ -217,7 +217,9 @@ const getState = ({ getStore, getActions, setStore }) => ({
 
     getProduct: (id) => {
       const store = getStore();
-      const productMatch = store.products.find((item) => item.id == id);
+      const productMatch = store.products.find(
+        (item) => Number(item.id) === Number(id),
+      );
       setStore({ product: productMatch || {} });
     },
 
@@ -237,7 +239,7 @@ const getState = ({ getStore, getActions, setStore }) => ({
     updateProduct: (id, data) => {
       const store = getStore();
       const updated = store.products.map((p) =>
-        p.id == id
+        Number(p.id) === Number(id)
           ? {
               ...p,
               ...data,
@@ -252,7 +254,7 @@ const getState = ({ getStore, getActions, setStore }) => ({
 
     deleteProduct: (id) => {
       const store = getStore();
-      const updated = store.products.filter((p) => p.id != id);
+      const updated = store.products.filter((p) => Number(p.id) !== Number(id));
       localStorage.setItem("laverde_products", JSON.stringify(updated));
       setStore({ products: updated });
     },
