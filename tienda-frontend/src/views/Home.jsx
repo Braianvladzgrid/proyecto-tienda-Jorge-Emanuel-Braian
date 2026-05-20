@@ -106,12 +106,6 @@ const Home = () => {
               <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent)" }}>{name}</div>
             </div>
           ))}
-          {/* <span>🥬</span>
-          <span>🍎</span>
-          <span>🌿</span>
-          <span>🫚</span>
-          <span>🥚</span>
-          <span>🍋</span> */}
         </div>
       </div>
 
@@ -147,66 +141,68 @@ const Home = () => {
               {cat}
             </button>
           ))}
-          {/* {["Todos", "Frutas", "Verduras", "Pecuarios", "Hierbas"].map((cat, i) => (
-            <button
-              key={cat}
-              className={`btn btn-sm ${i === 0 ? "btn-accent" : "btn-dark"}`}
-              style={{ borderRadius: "20px", padding: "6px 18px", fontWeight: 600 }}
-            >
-              {cat}
-            </button>
-          ))} */}
         </div>
 
         <div className="row g-4 text-start">
-          {/* {store.products && store.products.map((item) => ( */}
-          {filtered.map((item) => (
-            <div key={item.id} className="col-xl-3 col-lg-4 col-md-6">
-              <div className="card-dark h-100 style-card" style={{ borderRadius: "16px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-                <div style={{ position: "relative", paddingTop: "75%", background: "var(--surface-2)" }}>
-                  <Link to={"/product/" + item.id} className="text-decoration-none d-flex flex-column h-100" style={{ color: "var(--text)" }}>
-                    <img
-                      src={item.image_url || "https://placehold.co/400x300/e8f5e9/2e7d32?text=🥬"}
-                      alt={item.name}
-                      style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }}
-                    />
-                    <span style={{ position: "absolute", top: "12px", left: "12px", background: "var(--accent)", color: "#ffffff", padding: "4px 10px", borderRadius: "12px", fontSize: "0.75rem", fontWeight: 600 }}>
-                      {item.category}
-                    </span>
-                  </Link>
-                  <button style={{ position: "absolute", top: "12px", right: "12px", background: "rgba(0,0,0,0.4)", border: "none", color: "#ffffff", borderRadius: "50%", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-                    <i className="far fa-heart"></i>
-                  </button>
-                </div>
-
-                <div style={{ padding: "20px", flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                  <div>
+          {filtered.map((item) => {
+            const isFav = store.favorites && store.favorites.some((f) => f.product_id === item.id);
+            return (
+              <div key={item.id} className="col-xl-3 col-lg-4 col-md-6">
+                <div className="card-dark h-100 style-card" style={{ borderRadius: "16px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+                  <div style={{ position: "relative", paddingTop: "75%", background: "var(--surface-2)" }}>
                     <Link to={"/product/" + item.id} className="text-decoration-none d-flex flex-column h-100" style={{ color: "var(--text)" }}>
-                      <h5 style={{ fontWeight: 700, marginBottom: "6px", fontSize: "1.15rem" }}>{item.name}</h5>
-                      <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "16px" }}>{item.description}</p>
+                      <img
+                        src={item.image_url || "https://placehold.co/400x300/e8f5e9/2e7d32?text=🥬"}
+                        alt={item.name}
+                        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                      <span style={{ position: "absolute", top: "12px", left: "12px", background: "var(--accent)", color: "#ffffff", padding: "4px 10px", borderRadius: "12px", fontSize: "0.75rem", fontWeight: 600 }}>
+                        {item.category}
+                      </span>
                     </Link>
+                    {store.token && (
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          actions.toggleFavorite(item.id);
+                        }}
+                        style={{ position: "absolute", top: "12px", right: "12px", background: "rgba(0,0,0,0.4)", border: "none", color: isFav ? "#ef4444" : "#ffffff", borderRadius: "50%", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", zIndex: 10 }}
+                      >
+                        <i className={isFav ? "fas fa-heart" : "far fa-heart"}></i>
+                      </button>
+                    )}
                   </div>
 
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ padding: "20px", flex: 1, display: "flex", flexDirection: "column", justify: "space-between" }}>
                     <div>
-                      <span style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--accent)" }}>${item.price}</span>
-                      <span style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}> / {item.unit}</span>
+                      <Link to={"/product/" + item.id} className="text-decoration-none d-flex flex-column h-100" style={{ color: "var(--text)" }}>
+                        <h5 style={{ fontWeight: 700, marginBottom: "6px", fontSize: "1.15rem" }}>{item.name}</h5>
+                        <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "16px" }}>{item.description}</p>
+                      </Link>
                     </div>
-                    <button
-                      className="btn btn-accent btn-sm"
-                      onClick={() => actions.addToCart(item)}
-                      style={{ borderRadius: "8px", padding: "6px 12px", fontWeight: 600 }}
-                    >
-                      + Agregar
-                    </button>
+
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <div>
+                        <span style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--accent)" }}>${item.price}</span>
+                        <span style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}> / {item.unit}</span>
+                      </div>
+                      <button
+                        className="btn btn-accent btn-sm"
+                        onClick={() => actions.addToCart(item)}
+                        style={{ borderRadius: "8px", padding: "6px 12px", fontWeight: 600 }}
+                      >
+                        + Agregar
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 

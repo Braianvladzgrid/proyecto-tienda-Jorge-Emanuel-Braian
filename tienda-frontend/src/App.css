@@ -1,8 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap");
 
 :root {
   --bg-main: #040d06;
-  --bg-gradient: radial-gradient(circle at 50% 0%, #0f2913 0%, #07190b 50%, #040d06 100%);
+  --bg-gradient: radial-gradient(
+    circle at 50% 0%,
+    #0f2913 0%,
+    #07190b 50%,
+    #040d06 100%
+  );
   --panel-bg: rgba(7, 25, 11, 0.65);
   --panel-hover: rgba(15, 41, 19, 0.5);
   --accent: #4ade80;
@@ -27,8 +32,18 @@
   letter-spacing: -0.01em;
 }
 
-body, html, #root {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+body,
+html,
+#root {
+  font-family:
+    "Plus Jakarta Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif !important;
   background: var(--bg-main) !important;
   background-image: var(--bg-gradient) !important;
   background-attachment: fixed !important;
@@ -41,11 +56,56 @@ body, html, #root {
   overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, h6, p, span, a, button, input, select, textarea, div, li, ul, label, td, th, section, header, footer, main, aside, article {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+a,
+button,
+input,
+select,
+textarea,
+div,
+li,
+ul,
+label,
+td,
+th,
+section,
+header,
+footer,
+main,
+aside,
+article {
+  font-family:
+    "Plus Jakarta Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif !important;
 }
 
-section, main, .py-5, .bg-light, .bg-white, .auth-page, .cart-page, .login-page, .register-page, .admin-page, .profile-page, .login-section, .register-section, .cart-section {
+section,
+main,
+.py-5,
+.bg-light,
+.bg-white,
+.auth-page,
+.cart-page,
+.login-page,
+.register-page,
+.admin-page,
+.profile-page,
+.login-section,
+.register-section,
+.cart-section {
   background: transparent !important;
 }
 
@@ -55,12 +115,12 @@ section, main, .py-5, .bg-light, .bg-white, .auth-page, .cart-page, .login-page,
   width: 100%;
 }
 
-.card-dark, 
-.filter-sidebar, 
-.auth-card, 
-.login-container, 
-.register-container, 
-.cart-container, 
+.card-dark,
+.filter-sidebar,
+.auth-card,
+.login-container,
+.register-container,
+.cart-container,
 .checkout-card,
 .info-section-card,
 .card,
@@ -78,11 +138,11 @@ section, main, .py-5, .bg-light, .bg-white, .auth-page, .cart-page, .login-page,
   color: var(--text-main) !important;
 }
 
-.card-dark:hover, 
-.auth-card:hover, 
-.login-container:hover, 
-.register-container:hover, 
-.cart-container:hover, 
+.card-dark:hover,
+.auth-card:hover,
+.login-container:hover,
+.register-container:hover,
+.cart-container:hover,
 .filter-sidebar:hover,
 .card:hover,
 .profile-card:hover,
@@ -90,19 +150,42 @@ section, main, .py-5, .bg-light, .bg-white, .auth-page, .cart-page, .login-page,
   transform: translateY(-6px) !important;
   background: var(--panel-hover) !important;
   border-color: var(--border-hover) !important;
-  box-shadow: var(--shadow-card-hover), 0 0 40px 0 var(--accent-glow) !important;
+  box-shadow:
+    var(--shadow-card-hover),
+    0 0 40px 0 var(--accent-glow) !important;
 }
 
-.card-dark *, .filter-sidebar *, .auth-card *, .login-container *, .register-container *, .cart-container *, .checkout-card *, .info-section-card *, .card *, .modal-content *, .profile-card *, .admin-card * {
+.card-dark *,
+.filter-sidebar *,
+.auth-card *,
+.login-container *,
+.register-container *,
+.cart-container *,
+.checkout-card *,
+.info-section-card *,
+.card *,
+.modal-content *,
+.profile-card *,
+.admin-card * {
   color: var(--text-main) !important;
   text-shadow: none !important;
 }
 
-.card-dark p, .filter-sidebar p, .auth-card p, .login-container p, .register-container p, .cart-container p, .card p, span, label, .text-muted {
+.card-dark p,
+.filter-sidebar p,
+.auth-card p,
+.login-container p,
+.register-container p,
+.cart-container p,
+.card p,
+span,
+label,
+.text-muted {
   color: var(--text-muted) !important;
 }
 
-.nav-dark, .navbar {
+.nav-dark,
+.navbar {
   background: rgba(4, 13, 6, 0.7) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
@@ -114,13 +197,15 @@ section, main, .py-5, .bg-light, .bg-white, .auth-page, .cart-page, .login-page,
   transition: var(--transition);
 }
 
-.navbar-brand, .navbar-brand * {
+.navbar-brand,
+.navbar-brand * {
   color: var(--text-main) !important;
   font-weight: 800 !important;
   letter-spacing: -0.03em;
 }
 
-.nav-link-custom, .nav-link {
+.nav-link-custom,
+.nav-link {
   color: var(--text-muted) !important;
   font-weight: 500 !important;
   transition: var(--transition) !important;
@@ -129,12 +214,18 @@ section, main, .py-5, .bg-light, .bg-white, .auth-page, .cart-page, .login-page,
   background: transparent !important;
 }
 
-.nav-link-custom:hover, .nav-link:hover {
+.nav-link-custom:hover,
+.nav-link:hover {
   color: var(--text-main) !important;
   background: rgba(74, 222, 128, 0.05) !important;
 }
 
-.btn-accent, .auth-btn, .cart-btn, .btn-primary, button[type="submit"], .btn-success {
+.btn-accent,
+.auth-btn,
+.cart-btn,
+.btn-primary,
+button[type="submit"],
+.btn-success {
   background: var(--accent-linear) !important;
   border: 1px solid rgba(255, 255, 255, 0.05) !important;
   color: #ffffff !important;
@@ -149,18 +240,30 @@ section, main, .py-5, .bg-light, .bg-white, .auth-page, .cart-page, .login-page,
   cursor: pointer;
 }
 
-.btn-accent:hover, .auth-btn:hover, .cart-btn:hover, .btn-primary:hover, button[type="submit"]:hover, .btn-success:hover {
+.btn-accent:hover,
+.auth-btn:hover,
+.cart-btn:hover,
+.btn-primary:hover,
+button[type="submit"]:hover,
+.btn-success:hover {
   transform: translateY(-2px) !important;
   box-shadow: 0 6px 20px 0 rgba(22, 101, 52, 0.6) !important;
   background: var(--accent-linear-hover) !important;
   color: #ffffff !important;
 }
 
-.btn-accent:active, .auth-btn:active, .cart-btn:active, .btn-primary:active, button[type="submit"]:active, .btn-success:active {
+.btn-accent:active,
+.auth-btn:active,
+.cart-btn:active,
+.btn-primary:active,
+button[type="submit"]:active,
+.btn-success:active {
   transform: translateY(0) scale(0.98) !important;
 }
 
-.btn-outline-accent, .btn-outline-primary, .btn-outline-success {
+.btn-outline-accent,
+.btn-outline-primary,
+.btn-outline-success {
   border: 1px solid var(--border-glass) !important;
   color: var(--text-main) !important;
   border-radius: var(--radius-sm) !important;
@@ -170,13 +273,20 @@ section, main, .py-5, .bg-light, .bg-white, .auth-page, .cart-page, .login-page,
   transition: var(--transition) !important;
 }
 
-.btn-outline-accent:hover, .btn-outline-primary:hover, .btn-outline-success:hover {
+.btn-outline-accent:hover,
+.btn-outline-primary:hover,
+.btn-outline-success:hover {
   background: rgba(74, 222, 128, 0.05) !important;
   border-color: var(--border-hover) !important;
   transform: translateY(-2px) !important;
 }
 
-.form-control, .form-select, .auth-input, input, select, textarea {
+.form-control,
+.form-select,
+.auth-input,
+input,
+select,
+textarea {
   border-radius: var(--radius-sm) !important;
   border: 1px solid var(--border-glass) !important;
   padding: 12px 16px !important;
@@ -185,18 +295,26 @@ section, main, .py-5, .bg-light, .bg-white, .auth-page, .cart-page, .login-page,
   color: var(--text-main) !important;
 }
 
-.form-control:focus, .form-select:focus, .auth-input:focus, input:focus, select:focus, textarea:focus {
+.form-control:focus,
+.form-select:focus,
+.auth-input:focus,
+input:focus,
+select:focus,
+textarea:focus {
   border-color: var(--accent) !important;
   background: rgba(4, 13, 6, 0.7) !important;
   box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.15) !important;
   outline: none !important;
 }
 
-.form-control::placeholder, input::placeholder, textarea::placeholder {
+.form-control::placeholder,
+input::placeholder,
+textarea::placeholder {
   color: rgba(255, 255, 255, 0.2) !important;
 }
 
-.form-select option, select option {
+.form-select option,
+select option {
   background-color: #040d06 !important;
   color: var(--text-main) !important;
 }
@@ -255,13 +373,17 @@ section, main, .py-5, .bg-light, .bg-white, .auth-page, .cart-page, .login-page,
   border-color: rgba(239, 68, 68, 0.2) !important;
 }
 
-.table-verde, .cart-table, table {
+.table-verde,
+.cart-table,
+table {
   width: 100%;
   background: transparent !important;
   border-collapse: collapse !important;
 }
 
-.table-verde th, .cart-table th, th {
+.table-verde th,
+.cart-table th,
+th {
   background: rgba(255, 255, 255, 0.01) !important;
   color: var(--text-main) !important;
   font-weight: 600 !important;
@@ -270,13 +392,17 @@ section, main, .py-5, .bg-light, .bg-white, .auth-page, .cart-page, .login-page,
   text-align: left;
 }
 
-.table-verde td, .cart-table td, td {
+.table-verde td,
+.cart-table td,
+td {
   padding: 16px !important;
   border-bottom: 1px solid var(--border-glass) !important;
   color: var(--text-muted) !important;
 }
 
-.table-verde tr:hover td, .cart-table tr:hover td, table tr:hover td {
+.table-verde tr:hover td,
+.cart-table tr:hover td,
+table tr:hover td {
   color: var(--text-main) !important;
   background: rgba(255, 255, 255, 0.01) !important;
 }
@@ -308,7 +434,11 @@ footer a:hover {
   align-items: center;
   justify-content: space-between;
   padding: 18px 28px;
-  background: linear-gradient(135deg, rgba(7, 25, 11, 0.8) 0%, rgba(15, 41, 19, 0.6) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(7, 25, 11, 0.8) 0%,
+    rgba(15, 41, 19, 0.6) 100%
+  );
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-xl);
   margin-bottom: 20px;
@@ -421,7 +551,21 @@ footer a:hover {
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-4px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+@keyframes grow {
+  from {
+    width: 0px;
+  }
+  to {
+    width: 140px;
+  }
 }

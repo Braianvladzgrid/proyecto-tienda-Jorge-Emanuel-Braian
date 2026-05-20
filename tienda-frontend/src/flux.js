@@ -150,6 +150,15 @@ const getState = ({ getStore, getActions, setStore }) => ({
 
     signup: (firstName, lastName, email, password) => {
       const store = getStore();
+      if (
+        !firstName?.trim() ||
+        !lastName?.trim() ||
+        !email?.trim() ||
+        !password?.trim()
+      ) {
+        setStore({ error: "Todos los campos son obligatorios." });
+        return false;
+      }
       const exists = store.users.find((u) => u.email === email);
       if (exists) {
         setStore({ error: "Ya existe una cuenta con ese email." });
@@ -214,7 +223,12 @@ const getState = ({ getStore, getActions, setStore }) => ({
 
     createProduct: (data) => {
       const store = getStore();
-      const newProduct = { ...data, id: Date.now() };
+      const newProduct = {
+        ...data,
+        id: Date.now(),
+        price: Number(data.price) || 0,
+        stock: Number(data.stock) || 0,
+      };
       const updated = [...store.products, newProduct];
       localStorage.setItem("laverde_products", JSON.stringify(updated));
       setStore({ products: updated });
@@ -223,7 +237,14 @@ const getState = ({ getStore, getActions, setStore }) => ({
     updateProduct: (id, data) => {
       const store = getStore();
       const updated = store.products.map((p) =>
-        p.id == id ? { ...p, ...data } : p,
+        p.id == id
+          ? {
+              ...p,
+              ...data,
+              price: data.price !== undefined ? Number(data.price) : p.price,
+              stock: data.stock !== undefined ? Number(data.stock) : p.stock,
+            }
+          : p,
       );
       localStorage.setItem("laverde_products", JSON.stringify(updated));
       setStore({ products: updated });
@@ -267,7 +288,7 @@ const getState = ({ getStore, getActions, setStore }) => ({
       }
       const store = getStore();
       const updatedCart = store.cart.map((item) =>
-        item.id === productId ? { ...item, quantity } : item,
+        item.id === productId ? { ...item, quantity: Number(quantity) } : item,
       );
       localStorage.setItem("laverde_cart", JSON.stringify(updatedCart));
       setStore({ cart: updatedCart });
@@ -276,6 +297,13 @@ const getState = ({ getStore, getActions, setStore }) => ({
     clearCart: () => {
       localStorage.removeItem("laverde_cart");
       setStore({ cart: [] });
+    },
+
+    checkoutOrder: async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      localStorage.removeItem("laverde_cart");
+      setStore({ cart: [] });
+      return true;
     },
 
     toggleFavorite: (productId) => {
