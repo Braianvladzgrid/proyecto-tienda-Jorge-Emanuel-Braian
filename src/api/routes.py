@@ -52,7 +52,7 @@ def send_welcome_email(email):
 
 
 @api.route('/signup', methods=['POST'])
-def git signup():
+def git_signup():
     body = request.get_json()
     if not body or not body.get("email") or not body.get("password"):
         return jsonify({"error": "Email y contraseña son requeridos"}), 400
