@@ -38,16 +38,21 @@ def _upload_to_cloudinary(file):
 
 @api.route("/hello", methods=["GET"])
 def hello():
-    return jsonify({
-        "message": "Backend La Verde conectado",
-        "cloudinary": cloudinary_ready(),
-    }), 200
+    return jsonify({"message": "Backend conectado correctamente"}), 200
 
 
-# ─── AUTH ──────────────────────────────────────────────────────────────────────
+def send_welcome_email(email):
+    return requests.post(
+        f"https://api.mailgun.net/v3/{os.getenv('MAILGUN_DOMAIN')}/messages",
+        auth=("api", os.getenv("MAILGUN_API_KEY")),
+        data={"from": f"Tienda AI <mailgun@{os.getenv('MAILGUN_DOMAIN')}>",
+              "to": [email],
+              "subject": "Bienvenido a nuestra tienda",
+              "text": "Gracias por registrarte en nuestra plataforma."})
 
-@api.route("/signup", methods=["POST"])
-def signup():
+
+@api.route('/signup', methods=['POST'])
+def git signup():
     body = request.get_json()
     if not body or not body.get("email") or not body.get("password"):
         return jsonify({"error": "Email y contraseña son requeridos"}), 400
