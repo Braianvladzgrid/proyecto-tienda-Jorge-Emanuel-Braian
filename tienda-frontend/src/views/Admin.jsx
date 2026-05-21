@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { apiFetch, apiUploadImage } from "../api/client";
 import { Context } from "../layout";
 import { adminCopy as t } from "../copy/adminStrings";
+import { fallbackProductImage, getProductImage } from "../utils/productImages";
 
 const EMPTY = {
   id: null,
@@ -294,12 +295,10 @@ export const Admin = () => {
                       <tr key={product.id}>
                         <td>
                           <img
-                            src={
-                              product.image_url ||
-                              "https://placehold.co/48x48/e8f5e9/2e7d32?text=+"
-                            }
+                            src={getProductImage(product)}
                             alt=""
                             className="admin-table-thumb"
+                            onError={(e) => { e.currentTarget.src = fallbackProductImage(product); }}
                           />
                         </td>
                         <td className="fw-bold">{product.name}</td>

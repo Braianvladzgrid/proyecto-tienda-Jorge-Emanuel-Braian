@@ -1,6 +1,13 @@
 """
-Catalogo La Verde — cada producto con image_url (Wikimedia Commons, libre acceso).
+Catalogo La Verde: cada producto con image_url (Wikimedia Commons).
 """
+
+from unicodedata import combining, normalize
+
+
+def _key(value):
+    text = normalize("NFKD", value or "")
+    return "".join(ch for ch in text if not combining(ch)).casefold().strip()
 
 LA_VERDE_CATALOG = [
     {
@@ -25,16 +32,16 @@ LA_VERDE_CATALOG = [
         "name": "Naranja Valencia",
         "stock": 40,
         "unit": "kg",
-        "category": "Citricos",
+        "category": "Cítricos",
         "description": "Jugosa y rica en vitamina C. Perfecta para exprimir.",
         "price": 42,
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Clementine_whole.jpg/600px-Clementine_whole.jpg",
     },
     {
-        "name": "Limon",
+        "name": "Limón",
         "stock": 35,
         "unit": "kg",
-        "category": "Citricos",
+        "category": "Cítricos",
         "description": "Limon fresco, acido y aromatico para cocina y bebidas.",
         "price": 38,
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Lemons.jpg/600px-Lemons.jpg",
@@ -121,7 +128,7 @@ LA_VERDE_CATALOG = [
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Patates.jpg/600px-Patates.jpg",
     },
     {
-        "name": "Morron Rojo",
+        "name": "Morrón Rojo",
         "stock": 24,
         "unit": "kg",
         "category": "Verduras",
@@ -157,7 +164,7 @@ LA_VERDE_CATALOG = [
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Spinach_leaves.JPG/600px-Spinach_leaves.JPG",
     },
     {
-        "name": "Brocoli",
+        "name": "Brócoli",
         "stock": 16,
         "unit": "pza",
         "category": "Verduras",
@@ -193,7 +200,7 @@ LA_VERDE_CATALOG = [
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Coriander_plant.jpg/600px-Coriander_plant.jpg",
     },
     {
-        "name": "Oregano Seco",
+        "name": "Orégano Seco",
         "stock": 40,
         "unit": "pza",
         "category": "Condimentos",
@@ -250,13 +257,22 @@ LA_VERDE_CATALOG = [
 
 
 def ensure_catalog(db, Product):
-    """Inserta productos nuevos y repara image_url con Unsplash (bloqueado en localhost)."""
+    """Inserta productos nuevos y repara imagenes rotas o genericas."""
     added = 0
     fixed = 0
-    catalog_by_name = {item["name"]: item for item in LA_VERDE_CATALOG}
+    catalog_keys = {_key(item["name"]) for item in LA_VERDE_CATALOG}
+    rows_by_name = {}
+    duplicate_rows = []
+
+    for row in Product.query.order_by(Product.id).all():
+        name_key = _key(row.name)
+        if name_key in rows_by_name:
+            duplicate_rows.append(row)
+        else:
+            rows_by_name[name_key] = row
 
     for item in LA_VERDE_CATALOG:
-        row = Product.query.filter_by(name=item["name"]).first()
+        row = rows_by_name.get(_key(item["name"]))
         if not row:
             db.session.add(Product(**item, is_active=True))
             added += 1
@@ -270,6 +286,8 @@ def ensure_catalog(db, Product):
             or "clickabasto" in img
             or "grillhouse" in img
         )
+        row.name = item["name"]
+        row.category = item["category"]
         if bad:
             row.image_url = item["image_url"]
             fixed += 1
@@ -277,6 +295,10 @@ def ensure_catalog(db, Product):
             row.description = item["description"]
         if row.stock is None or row.stock == 0:
             row.stock = item["stock"]
+
+    for row in duplicate_rows:
+        if _key(row.name) in catalog_keys:
+            row.is_active = False
 
     db.session.commit()
     return added, fixed

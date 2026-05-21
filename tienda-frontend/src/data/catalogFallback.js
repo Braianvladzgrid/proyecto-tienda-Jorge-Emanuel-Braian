@@ -174,7 +174,7 @@ export const CATALOG_FALLBACK = [
     description: "Pepino fresco.",
     price: 36,
     image_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/A_small_cup_of_coffee.JPG/800px-A_small_cup_of_coffee.JPG",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Cucumbers.jpg/800px-Cucumbers.jpg",
   },
   {
     id: 17,
@@ -262,7 +262,7 @@ export const CATALOG_FALLBACK = [
     description: "Huevo fresco.",
     price: 55,
     image_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/WelshCorgiPembroke_breedingstock.jpg/800px-WelshCorgiPembroke_breedingstock.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Fresh_eggs.jpg/800px-Fresh_eggs.jpg",
   },
   {
     id: 25,
@@ -273,7 +273,7 @@ export const CATALOG_FALLBACK = [
     description: "Pechuga sin hueso.",
     price: 249,
     image_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/800px-Good_Food_Display_-_NCI_Visuals_Online.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Chicken_breast.jpg/800px-Chicken_breast.jpg",
   },
   {
     id: 26,

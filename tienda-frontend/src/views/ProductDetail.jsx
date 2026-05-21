@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Context } from "../layout";
 import ProductCard from "../components/ProductCard";
+import { fallbackProductImage, getProductImage } from "../utils/productImages";
 
 const ProductDetail = () => {
   const { store, actions } = useContext(Context);
@@ -50,8 +51,9 @@ const ProductDetail = () => {
           <div className="col-md-5">
             <div className="product-detail__image-wrap">
               <img
-                src={product.image_url || "https://placehold.co/500x500/e8f5e9/2e7d32?text=🥦"}
+                src={getProductImage(product)}
                 alt={product.name}
+                onError={(e) => { e.currentTarget.src = fallbackProductImage(product); }}
               />
             </div>
           </div>

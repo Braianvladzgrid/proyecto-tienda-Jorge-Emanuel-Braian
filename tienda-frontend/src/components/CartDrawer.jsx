@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../layout";
+import { fallbackProductImage, getProductImage } from "../utils/productImages";
 
 const CartDrawer = ({ isOpen, onClose }) => {
   const { store, actions } = useContext(Context);
@@ -62,9 +63,10 @@ const CartDrawer = ({ isOpen, onClose }) => {
                   style={{ animationDelay: 0.06 + index * 0.07 + "s" }}
                 >
                   <img
-                    src={item.image_url || "https://placehold.co/80x80/e8f5e9/2e7d32?text=🥦"}
+                    src={getProductImage(item)}
                     alt={item.name}
                     className="cart-drawer__item-img"
+                    onError={(e) => { e.currentTarget.src = fallbackProductImage(item); }}
                   />
                   <div className="cart-drawer__item-info">
                     <h3 className="cart-drawer__item-name">{item.name}</h3>

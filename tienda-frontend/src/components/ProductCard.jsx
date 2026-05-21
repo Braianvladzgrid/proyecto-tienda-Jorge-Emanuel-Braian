@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../layout";
 import { isFavoriteProduct } from "../utils/favoriteMatch";
+import { fallbackProductImage, getProductImage } from "../utils/productImages";
 
 const ProductCard = ({ product, animationDelay = 0 }) => {
   const { store, actions } = useContext(Context);
@@ -40,10 +41,10 @@ const ProductCard = ({ product, animationDelay = 0 }) => {
     >
       <div className="product-card__media">
         <img
-          src={product.image_url?.trim() || "https://placehold.co/400x300/0f2913/4ade80?text=🥦"}
+          src={getProductImage(product)}
           alt={product.name}
           className="product-img"
-          onError={(e) => { e.target.src = "https://placehold.co/400x300/0f2913/4ade80?text=🥦"; }}
+          onError={(e) => { e.currentTarget.src = fallbackProductImage(product); }}
         />
         <span className="product-card__price-badge">${product.price}</span>
         {store.token && (

@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../layout";
 import PageHeader from "../components/PageHeader";
+import { fallbackProductImage, getProductImage } from "../utils/productImages";
 
 const SHIPPING_THRESHOLD = 5000;
 const SHIPPING_COST = 350;
@@ -80,9 +81,10 @@ const Cart = () => {
               {store.cart.map((item, idx) => (
                 <div key={item.id} className={"d-flex align-items-center gap-3 py-3 " + (idx < store.cart.length - 1 ? "border-bottom-cart" : "")}>
                   <img
-                    src={item.image_url || "https://placehold.co/72x72/e8f5e9/2e7d32?text=🥦"}
+                    src={getProductImage(item)}
                     alt={item.name}
                     className="checkout-summary__thumb"
+                    onError={(e) => { e.currentTarget.src = fallbackProductImage(item); }}
                   />
                   <div className="flex-grow-1">
                     <div className="fw-bold">{item.name}</div>
@@ -127,7 +129,12 @@ const Cart = () => {
             {store.cart.slice(0, 4).map((item) => (
               <div key={item.id} className="checkout-summary__item">
                 <div className="checkout-summary__thumb-wrap">
-                  <img src={item.image_url || "https://placehold.co/64x64/e8f5e9/2e7d32?text=🥦"} alt={item.name} className="checkout-summary__thumb" />
+                  <img
+                    src={getProductImage(item)}
+                    alt={item.name}
+                    className="checkout-summary__thumb"
+                    onError={(e) => { e.currentTarget.src = fallbackProductImage(item); }}
+                  />
                   <span className="checkout-summary__qty-badge">{item.quantity}</span>
                 </div>
                 <span className="flex-grow-1 small fw-semibold">{item.name}</span>
